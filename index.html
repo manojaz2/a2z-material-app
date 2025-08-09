@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Material Usage & Video Proof | A to Z Packers & Movers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#ff6f00;
+      --bg:#f7fafc;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --ok:#16a34a;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+    .container{ max-width:760px; margin:24px auto; padding:16px; }
+    .card{
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:0 8px 24px rgba(2,6,23,.06);
+      padding:24px;
+    }
+    h1{ margin:0 0 8px 0; font-size:clamp(22px,3.5vw,30px); letter-spacing:0.2px; }
+    p.lead{ margin:4px 0 18px 0; color:var(--muted); font-size:clamp(14px,2.8vw,16px); }
+    form{ display:grid; gap:14px; }
+    .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    label{ font-weight:600; font-size:14px; }
+    input, select, textarea{
+      width:100%; font:inherit; padding:14px 12px; border:1.5px solid #e2e8f0;
+      border-radius:12px; background:#fff; outline:none; transition:border .2s, box-shadow .2s;
+    }
+    input:focus, select:focus, textarea:focus{ border-color:var(--brand); box-shadow:0 0 0 3px rgba(255,111,0,.15); }
+    textarea{ min-height:120px; resize:vertical; }
+    .hint{ color:var(--muted); font-size:12px; margin-top:6px }
+    .row{ display:flex; gap:12px; flex-wrap:wrap }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; user-select:none; border:0;
+      border-radius:999px; padding:14px 18px; font-weight:700; transition:transform .06s ease, box-shadow .2s;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn-primary{ background:var(--brand); color:#fff; box-shadow:0 8px 18px rgba(255,111,0,.25) }
+    .btn-outline{ background:#fff; color:var(--text); border:1.5px solid #e2e8f0 }
+    .badge{ display:inline-block; padding:6px 10px; border-radius:999px; background:#fff7ed; color:var(--warn); font-weight:600; font-size:12px }
+    .footer-note{ margin-top:10px; color:var(--muted); font-size:12px }
+    .hr{ height:1px; background:#e2e8f0; margin:6px 0 10px 0 }
+    .success{ color:var(--ok); font-weight:700; display:none }
+    @media (max-width:640px){ .grid-2{ grid-template-columns:1fr } }
+  </style>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" sizes="192x192" href="icon-192.png">
+  <meta name="theme-color" content="#ff6f00">
+  <script>
+    window.addEventListener('load', () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js');
+      }
+    });
+  </script>
+
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Material Usage & Video Proof</h1>
+      <p class="lead">Fill this form at the job site. It will open WhatsApp to send all details to <b>+91 93388 88550</b>. Include your Google Drive links for Start & End videos.</p>
+      <div class="badge">No login needed • Mobile friendly</div>
+      <div class="hr"></div>
+
+      <form id="whForm" novalidate>
+        <div class="grid-2">
+          <div>
+            <label for="jobId">Job ID</label>
+            <input id="jobId" name="jobId" type="text" placeholder="e.g., AZ-2025-001" required />
+          </div>
+          <div>
+            <label for="date">Packing Date</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="customer">Customer Name</label>
+            <input id="customer" name="customer" type="text" placeholder="Customer full name" required />
+          </div>
+          <div>
+            <label for="phone">Customer Phone</label>
+            <!-- Removed HTML pattern; we validate in JS and accept +91, spaces, dashes -->
+            <input id="phone" name="phone" type="tel" inputmode="numeric" placeholder="10-digit mobile or +91-XXXXXXXXXX" maxlength="18" required />
+            <div class="hint">We accept formats like 9876543210, 09876543210, +91 98765 43210.</div>
+          </div>
+        </div>
+
+        <div>
+          <label for="fromTo">From → To</label>
+          <input id="fromTo" name="fromTo" type="text" placeholder="Cuttack → Bhubaneswar" required />
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="materialsPlan">Materials Planned (Issued)</label>
+            <input id="materialsPlan" name="materialsPlan" type="text" placeholder="50 cartons, 2 bubble rolls, 6 tapes" required />
+            <div class="hint">What godown issued for this job.</div>
+          </div>
+          <div>
+            <label for="leftover">Leftover After Packing</label>
+            <input id="leftover" name="leftover" type="text" placeholder="8 cartons, 0 bubble rolls, 1 tape" />
+            <div class="hint">If not known yet, leave blank and update later.</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="startLink">Start Video Link (Google Drive)</label>
+            <input id="startLink" name="startLink" type="url" placeholder="https://drive.google.com/file/..." required />
+            <div class="hint">Upload video to Google Drive app first, then paste the share link here.</div>
+          </div>
+          <div>
+            <label for="endLink">End Video Link (Google Drive)</label>
+            <input id="endLink" name="endLink" type="url" placeholder="https://drive.google.com/file/..." />
+            <div class="hint">Paste after packing is finished (or edit later).</div>
+          </div>
+        </div>
+
+        <div>
+          <label for="notes">Notes / Special Requirements</label>
+          <textarea id="notes" name="notes" placeholder="Any special instructions, floor details, AC dismantling, etc."></textarea>
+        </div>
+
+        <div class="row">
+          <button type="submit" class="btn btn-primary">Send on WhatsApp</button>
+          <button type="button" class="btn btn-outline" id="copyBtn" title="Copy the formatted message">Copy Message</button>
+        </div>
+        <div id="okMsg" class="success">Message copied! Open WhatsApp to paste & send.</div>
+        <div class="footer-note">By tapping “Send on WhatsApp”, your browser will open WhatsApp with a pre-filled message to +91 9338888550. You must tap <b>Send</b> inside WhatsApp to deliver it.</div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const DEST_WA = "919338888550"; // Manoj's WhatsApp
+
+    function sanitizePhone(raw){
+      const digits = (raw || "").replace(/\\D/g, ""); // keep only numbers
+      if(digits.length < 10){
+        return null;
+      }
+      // Use the last 10 digits (handles +91XXXXXXXXXX or 0XXXXXXXXXX)
+      return digits.slice(-10);
+    }
+
+    function buildMessage(data){
+      const lines = [
+        "🧾 *Material Usage & Video Proof*",
+        `• *Job ID:* ${data.jobId}`,
+        `• *Date:* ${data.date}`,
+        `• *Customer:* ${data.customer} (${data.phone})`,
+        `• *Route:* ${data.fromTo}`,
+        `• *Materials Planned:* ${data.materialsPlan}`,
+        data.leftover ? `• *Leftover:* ${data.leftover}` : null,
+        `• *Start Video:* ${data.startLink}`,
+        data.endLink ? `• *End Video:* ${data.endLink}` : null,
+        data.notes ? `• *Notes:* ${data.notes}` : null,
+        "",
+        "_Sent via Field Form_"
+      ].filter(Boolean);
+      return lines.join("%0A"); // newline encoding for URL
+    }
+
+    function getFormData(){
+      const f = document.getElementById("whForm");
+      const rawPhone = f.phone.value;
+      const clean10 = sanitizePhone(rawPhone);
+      return {
+        jobId: encodeURIComponent(f.jobId.value.trim()),
+        date: encodeURIComponent(f.date.value),
+        customer: encodeURIComponent(f.customer.value.trim()),
+        phone: clean10 ? encodeURIComponent(clean10) : "",
+        fromTo: encodeURIComponent(f.fromTo.value.trim()),
+        materialsPlan: encodeURIComponent(f.materialsPlan.value.trim()),
+        leftover: encodeURIComponent(f.leftover.value.trim()),
+        startLink: encodeURIComponent(f.startLink.value.trim()),
+        endLink: encodeURIComponent(f.endLink.value.trim()),
+        notes: encodeURIComponent(f.notes.value.trim())
+      };
+    }
+
+    document.getElementById("whForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      const f = document.getElementById("whForm");
+      // simple required checks
+      if(!f.jobId.value.trim() || !f.date.value || !f.customer.value.trim() || !f.fromTo.value.trim() || !f.materialsPlan.value.trim() || !f.startLink.value.trim()){
+        alert("Please fill all required fields.");
+        return;
+      }
+
+      const clean10 = sanitizePhone(f.phone.value);
+      if(!clean10){
+        alert("Please enter a valid Indian mobile number (10 digits). You can include +91 or spaces; we'll handle it.");
+        return;
+      }
+
+      const data = getFormData();
+      // replace phone placeholder with +91-XXXXXXXXXX display for message
+      data.phone = encodeURIComponent("+91-" + clean10);
+
+      const msg = buildMessage(data);
+      const url = `https://wa.me/${DEST_WA}?text=${msg}`;
+      window.location.href = url;
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", function(){
+      const f = document.getElementById("whForm");
+      const clean10 = sanitizePhone(f.phone.value);
+      const data = getFormData();
+      data.phone = clean10 ? encodeURIComponent("+91-" + clean10) : encodeURIComponent("(invalid phone)");
+      const decodedMsg = decodeURIComponent(buildMessage(data)).replace(/%0A/g, "\\n");
+      navigator.clipboard.writeText(decodedMsg).then(()=>{
+        const ok = document.getElementById("okMsg");
+        ok.style.display = "block";
+        setTimeout(()=>{ ok.style.display = "none"; }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
