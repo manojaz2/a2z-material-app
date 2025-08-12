@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Daily Work Completion Form - A to Z Packers & Movers</title>
+    <meta name="theme-color" content="#556b2f"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6b8e23 0%, #556b2f 100%);
+            min-height: 100vh; padding: 20px 15px; color: #333;
+        }
+        .container {
+            max-width: 480px; margin: 0 auto; background: #fff;
+            border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #556b2f 0%, #6b8e23 100%);
+            color: #fff; padding: 30px 25px; text-align: center;
+        }
+        .truck-icon { font-size: 48px; margin-bottom: 15px; display: block; }
+        .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .form-content { padding: 30px 25px; }
+        .section { margin-bottom: 35px; }
+        .section-title {
+            font-size: 18px; font-weight: 600; color: #556b2f;
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #ecf0f1;
+        }
+        .form-group { margin-bottom: 25px; }
+        .form-label {
+            display: block; font-size: 16px; font-weight: 500; color: #556b2f; margin-bottom: 12px;
+        }
+        .required { color: #e74c3c; }
+        .dropdown, .text-input {
+            width: 100%; padding: 16px; border: 2px solid #ecf0f1; border-radius: 12px;
+            font-size: 16px; transition: all .3s ease; background: #f8f9fa; appearance: none;
+        }
+        .dropdown {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center; background-repeat: no-repeat; background-size: 16px; padding-right: 40px;
+        }
+        .dropdown:focus, .text-input:focus {
+            outline: none; border-color: #6b8e23; background: #fff; box-shadow: 0 0 0 3px rgba(107,142,35,.1);
+        }
+        .others-input { margin-top: 12px; display: none; }
+        .others-input.show { display: block; }
+        .toggle-group { display: flex; gap: 12px; margin-top: 12px; }
+        .toggle-btn {
+            flex: 1; padding: 16px; border: 2px solid #ecf0f1; border-radius: 12px; background: #f8f9fa;
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all .3s ease; text-align: center;
+        }
+        .toggle-btn.yes { color: #27ae60; }
+        .toggle-btn.no  { color: #e74c3c; }
+        .toggle-btn.active.yes {
+            background: #27ae60; color: #fff; border-color: #27ae60; box-shadow: 0 4px 12px rgba(39,174,96,.3);
+        }
+        .toggle-btn.active.no {
+            background: #e74c3c; color: #fff; border-color: #e74c3c; box-shadow: 0 4px 12px rgba(231,76,60,.3);
+        }
+        .submit-btn {
+            width: 100%; padding: 20px; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: #fff; border: none; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer;
+            transition: all .3s ease; box-shadow: 0 8px 20px rgba(39,174,96,.3); text-transform: uppercase; letter-spacing: .5px;
+        }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(39,174,96,.4); }
+        .submit-btn:active { transform: translateY(0); }
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .form-content { padding: 25px 20px; }
+            .header { padding: 25px 20px; }
+            .header h1 { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <span class="truck-icon">🚚</span>
+        <h1>Daily Work Completion Form</h1>
+    </div>
+
+    <div class="form-content">
+        <form id="dailyForm">
+            <!-- Section 1: Driver Details -->
+            <div class="section">
+                <h2 class="section-title">Driver Details</h2>
+                <div class="form-group">
+                    <label class="form-label" for="driverName">
+                        Driver Name <span class="required">*</span>
+                    </label>
+                    <select id="driverName" name="driverName" class="dropdown" required>
+                        <option value="">Select Driver</option>
+                        <option value="Sanjay">Sanjay</option>
+                        <option value="Ajay">Ajay</option>
+                        <option value="Somnath">Somnath</option>
+                        <option value="Mahesh">Mahesh</option>
+                        <option value="Santosh">Santosh</option>
+                        <option value="Kaviraj">Kaviraj</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Section 2: Locations -->
+            <div class="section">
+                <h2 class="section-title">Locations</h2>
+
+                <div class="form-group">
+                    <label class="form-label" for="fromLocation">From Location <span class="required">*</span></label>
+                    <select id="fromLocation" name="fromLocation" class="dropdown" required>
+                        <option value="">Select From Location</option>
+                        <option value="Angul">Angul</option>
+                        <option value="Balangir">Balangir</option>
+                        <option value="Balasore">Balasore</option>
+                        <option value="Bargarh">Bargarh</option>
+                        <option value="Bhadrak">Bhadrak</option>
+                        <option value="Boudh">Boudh</option>
+                        <option value="Cuttack">Cuttack</option>
+                        <option value="Deogarh">Deogarh</option>
+                        <option value="Dhenkanal">Dhenkanal</option>
+                        <option value="Gajapati">Gajapati</option>
+                        <option value="Ganjam">Ganjam</option>
+                        <option value="Jagatsinghpur">Jagatsinghpur</option>
+                        <option value="Jajpur">Jajpur</option>
+                        <option value="Jharsuguda">Jharsuguda</option>
+                        <option value="Kalahandi">Kalahandi</option>
+                        <option value="Kandhamal">Kandhamal</option>
+                        <option value="Kendrapara">Kendrapara</option>
+                        <option value="Keonjhar">Keonjhar</option>
+                        <option value="Khordha">Khordha</option>
+                        <option value="Koraput">Koraput</option>
+                        <option value="Malkangiri">Malkangiri</option>
+                        <option value="Mayurbhanj">Mayurbhanj</option>
+                        <option value="Nabarangpur">Nabarangpur</option>
+                        <option value="Nayagarh">Nayagarh</option>
+                        <option value="Nuapada">Nuapada</option>
+                        <option value="Puri">Puri</option>
+                        <option value="Rayagada">Rayagada</option>
+                        <option value="Sambalpur">Sambalpur</option>
+                        <option value="Subarnapur">Subarnapur</option>
+                        <option value="Sundargarh">Sundargarh</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <input type="text" id="fromOthers" class="text-input others-input" placeholder="Enter district name" inputmode="text" autocomplete="off">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="toLocation">To Location <span class="required">*</span></label>
+                    <select id="toLocation" name="toLocation" class="dropdown" required>
+                        <option value="">Select To Location</option>
+                        <option value="Angul">Angul</option>
+                        <option value="Balangir">Balangir</option>
+                        <option value="Balasore">Balasore</option>
+                        <option value="Bargarh">Bargarh</option>
+                        <option value="Bhadrak">Bhadrak</option>
+                        <option value="Boudh">Boudh</option>
+                        <option value="Cuttack">Cuttack</option>
+                        <option value="Deogarh">Deogarh</option>
+                        <option value="Dhenkanal">Dhenkanal</option>
+                        <option value="Gajapati">Gajapati</option>
+                        <option value="Ganjam">Ganjam</option>
+                        <option value="Jagatsinghpur">Jagatsinghpur</option>
+                        <option value="Jajpur">Jajpur</option>
+                        <option value="Jharsuguda">Jharsuguda</option>
+                        <option value="Kalahandi">Kalahandi</option>
+                        <option value="Kandhamal">Kandhamal</option>
+                        <option value="Kendrapara">Kendrapara</option>
+                        <option value="Keonjhar">Keonjhar</option>
+                        <option value="Khordha">Khordha</option>
+                        <option value="Koraput">Koraput</option>
+                        <option value="Malkangiri">Malkangiri</option>
+                        <option value="Mayurbhanj">Mayurbhanj</option>
+                        <option value="Nabarangpur">Nabarangpur</option>
+                        <option value="Nayagarh">Nayagarh</option>
+                        <option value="Nuapada">Nuapada</option>
+                        <option value="Puri">Puri</option>
+                        <option value="Rayagada">Rayagada</option>
+                        <option value="Sambalpur">Sambalpur</option>
+                        <option value="Subarnapur">Subarnapur</option>
+                        <option value="Sundargarh">Sundargarh</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <input type="text" id="toOthers" class="text-input others-input" placeholder="Enter district name" inputmode="text" autocomplete="off">
+                </div>
+            </div>
+
+            <!-- Section 3: Job Completion Checklist -->
+            <div class="section">
+                <h2 class="section-title">Job Completion Checklist</h2>
+
+                <div class="form-group">
+                    <label class="form-label">All packed items touched the wall?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="itemsTouchedWall" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="itemsTouchedWall" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">All big items covered with fabric sheet & lamination?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="bigItemsCovered" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="bigItemsCovered" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Are you wearing uniform?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="wearingUniform" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="wearingUniform" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Did you fill up the item list?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="itemListFilled" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="itemListFilled" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Did you take final payment online?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="finalPaymentOnline" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="finalPaymentOnline" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Did you take customer review?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="customerReview" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="customerReview" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Did you give Geeta to the customer?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="geetaGiven" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="geetaGiven" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Did you match items with our item list?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="itemsMatched" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="itemsMatched" data-value="No">No</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Did you send packing video?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn yes" data-question="packingVideoSent" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn no"  data-question="packingVideoSent" data-value="No">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Submit -->
+            <div class="section">
+                <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // In-memory store for checklist answers
+    const formData = {};
+
+    // "Others" dropdown visibility
+    function handleOthers(selectId, inputId) {
+        const selectEl = document.getElementById(selectId);
+        const inputEl  = document.getElementById(inputId);
+        selectEl.addEventListener('change', function () {
+            if (this.value === 'Others') {
+                inputEl.classList.add('show');
+                inputEl.required = true;
+            } else {
+                inputEl.classList.remove('show');
+                inputEl.required = false;
+                inputEl.value = '';
+            }
+        });
+    }
+    handleOthers('fromLocation', 'fromOthers');
+    handleOthers('toLocation', 'toOthers');
+
+    // Toggle buttons
+    document.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('toggle-btn')) return;
+        const question = e.target.dataset.question;
+        const value = e.target.dataset.value;
+        const group = e.target.parentElement;
+
+        group.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        formData[question] = value;
+    });
+
+    // Form submit → compose WhatsApp message & redirect
+    document.getElementById('dailyForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+
+        const driverName   = document.getElementById('driverName').value;
+        const fromLocation = document.getElementById('fromLocation').value;
+        const toLocation   = document.getElementById('toLocation').value;
+        const fromOthers   = document.getElementById('fromOthers').value.trim();
+        const toOthers     = document.getElementById('toOthers').value.trim();
+
+        if (!driverName || !fromLocation || !toLocation) {
+            alert('Please fill in all required fields (Driver Name, From Location, To Location)');
+            submitBtn.disabled = false;
+            return;
+        }
+        if (fromLocation === 'Others' && !fromOthers) {
+            alert('Please enter the From Location district name');
+            submitBtn.disabled = false;
+            return;
+        }
+        if (toLocation === 'Others' && !toOthers) {
+            alert('Please enter the To Location district name');
+            submitBtn.disabled = false;
+            return;
+        }
+
+        const requiredQuestions = [
+            'itemsTouchedWall','bigItemsCovered','wearingUniform','itemListFilled',
+            'finalPaymentOnline','customerReview','geetaGiven','itemsMatched','packingVideoSent'
+        ];
+        for (let q of requiredQuestions) {
+            if (!formData[q]) {
+                alert('Please answer all checklist questions');
+                submitBtn.disabled = false;
+                return;
+            }
+        }
+
+        const finalFrom = fromLocation === 'Others' ? fromOthers : fromLocation;
+        const finalTo   = toLocation   === 'Others' ? toOthers   : toLocation;
+
+        const now = new Date();
+        const timestamp =
+            now.getFullYear() + '-' +
+            String(now.getMonth() + 1).padStart(2, '0') + '-' +
+            String(now.getDate()).padStart(2, '0') + ' ' +
+            String(now.getHours()).padStart(2, '0') + ':' +
+            String(now.getMinutes()).padStart(2, '0');
+
+        const message =
+`🚚 A to Z Packers & Movers – Daily Job Report
+Driver: ${driverName}
+From: ${finalFrom} → To: ${finalTo}
+Items touched wall: ${formData.itemsTouchedWall}
+Big items covered: ${formData.bigItemsCovered}
+Wearing uniform: ${formData.wearingUniform}
+Item list filled: ${formData.itemListFilled}
+Final payment online: ${formData.finalPaymentOnline}
+Review taken: ${formData.customerReview}
+Geeta given: ${formData.geetaGiven}
+Items matched with list: ${formData.itemsMatched}
+Packing video sent: ${formData.packingVideoSent}
+Timestamp: ${timestamp}`;
+
+        const encoded = encodeURIComponent(message);
+
+        // Your WhatsApp number (India format without +): 91 + number
+        const whatsappNumber = '919338888550';
+        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encoded}`;
+
+        // Redirect (less likely to be blocked than window.open)
+        window.location.href = whatsappURL;
+    });
+</script>
+</body>
+</html>
