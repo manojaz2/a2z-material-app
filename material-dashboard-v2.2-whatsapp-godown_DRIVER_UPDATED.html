@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Material Issue & Stock Dashboard - A to Z Packers & Movers (v2.2)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            olive: {50:'#f7f8f3',100:'#e8ebd9',200:'#d1d7b8',300:'#b4be8f',400:'#9ba76c',500:'#7d8a4f',600:'#626d3d',700:'#4d5532',800:'#3f452b',900:'#363a27'},
+            forest: {50:'#f0f4f0',100:'#dce6dc',200:'#b9ceb9',300:'#8fb08f',400:'#6b926b',500:'#4a7c4a',600:'#3a623a',700:'#2f4f2f',800:'#264026',900:'#1f351f'}
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .sparkline{width:60px;height:20px}
+    .location-pill{transition:all .2s ease}
+    .location-pill:hover{transform:translateY(-1px)}
+    .gradient-bg{background:linear-gradient(135deg,#7d8a4f 0%,#4a7c4a 100%)}
+    .card-shadow{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06)}
+    .card-shadow:hover{box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)}
+    .low-stock-badge{animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+    #errorOverlay{position:fixed;bottom:12px;left:12px;max-width:520px;background:#fff;border:1px solid #fecaca;color:#991b1b;padding:12px 14px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.08);font-size:13px;z-index:9999;display:none}
+    #errorOverlay pre{white-space:pre-wrap;margin:6px 0 0 0}
+  </style>
+</head>
+<body class="bg-gradient-to-br from-olive-50 to-forest-50 min-h-screen">
+  <div id="errorOverlay">
+    <b>⚠️ Script error</b>
+    <div id="errorMsg"></div>
+    <pre id="errorTrace"></pre>
+  </div>
+
+  <!-- Header -->
+  <header class="gradient-bg text-white p-4 sticky top-0 z-50">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-bold">A to Z Packers & Movers</h1>
+        <p class="text-sm opacity-90">Material Issue & Stock Dashboard</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="openStockMaster()" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-xl text-sm transition-colors">Stock Master</button>
+        <button onclick="resetAllData()" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-xl text-sm transition-colors">Reset Data</button>
+        <button onclick="toggleMenu()" class="bg-white/20 hover:bg-white/30 p-2 rounded-xl" title="Menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Menu -->
+  <div id="navMenu" class="hidden bg-white border-b border-olive-200 p-4">
+    <div class="flex flex-wrap gap-2">
+      <button onclick="showSection('dashboard')" class="nav-btn bg-olive-100 text-olive-800 px-4 py-2 rounded-xl hover:bg-olive-200 transition-colors">Dashboard</button>
+      <button onclick="showSection('movement')" class="nav-btn bg-olive-100 text-olive-800 px-4 py-2 rounded-xl hover:bg-olive-200 transition-colors">Material Movement</button>
+      <button onclick="showSection('driver')" class="nav-btn bg-olive-100 text-olive-800 px-4 py-2 rounded-xl hover:bg-olive-200 transition-colors">Driver Ledger</button>
+      <button onclick="showSection('godown')" class="nav-btn bg-olive-100 text-olive-800 px-4 py-2 rounded-xl hover:bg-olive-200 transition-colors">Godown Tracker</button>
+    </div>
+  </div>
+
+  <!-- First-time Banner -->
+  <div id="firstTimeBanner" class="hidden bg-amber-50 border border-amber-200 rounded-2xl m-4 p-4">
+    <div class="flex items-center gap-3">
+      <div class="bg-amber-100 p-2 rounded-xl">
+        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div class="flex-1">
+        <h3 class="font-semibold text-amber-800">Welcome! Add Opening Stock (Optional)</h3>
+        <p class="text-sm text-amber-700">Set up your initial stock levels to get started. You can skip this and add stock later.</p>
+      </div>
+      <button onclick="openQuickStockEntry()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-xl text-sm transition-colors">Quick Setup</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="p-4 space-y-6">
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="space-y-6">
+      <!-- Quick Stock Entry -->
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+        <h2 class="text-lg font-semibold text-forest-800 mb-4 flex items-center gap-2">
+          <div class="bg-forest-100 p-2 rounded-xl">
+            <svg class="w-5 h-5 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+          </div>
+          Quick Stock Entry
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Item</label>
+            <select id="quickItem" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+              <option value="">Select Item</option>
+              <option value="carton">Carton</option>
+              <option value="corrugated">Corrugated Sheet</option>
+              <option value="lamination">Lamination (Stretch Film)</option>
+              <option value="bubble">Bubble Sheet</option>
+              <option value="foam">Blue Foam</option>
+              <option value="tape">Cello Tape</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+            <input type="number" id="quickQty" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="0" min="0" step="0.01">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+            <select id="quickUnit" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+              <option value="pieces">Pieces</option>
+              <option value="percent">%</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Movement</label>
+            <select id="quickMovement" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+              <option value="receive">Receive</option>
+              <option value="adjust_plus">Adjustment +</option>
+              <option value="adjust_minus">Adjustment -</option>
+              <option value="writeoff">Write-off</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+            <select id="quickLocation" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500"></select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Reason</label>
+            <input type="text" id="quickReason" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="Brief reason">
+          </div>
+          <div class="md:col-span-2 lg:col-span-2 flex items-end">
+            <button onclick="addQuickStock()" class="w-full bg-forest-600 hover:bg-forest-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">Add to Stock</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Overview -->
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-forest-800 flex items-center gap-2">
+            <div class="bg-forest-100 p-2 rounded-xl">
+              <svg class="w-5 h-5 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            Today's Stock Overview
+          </h2>
+          <div class="flex gap-2">
+            <button onclick="shareToWhatsApp(generateDashboardReport())" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-sm transition-colors">📱 WhatsApp</button>
+            <button onclick="exportCSV()" class="bg-olive-600 hover:bg-olive-700 text-white px-3 py-2 rounded-xl text-sm transition-colors">📊 Export</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-200">
+                <th class="text-left py-3 px-2 font-medium text-gray-700">Item</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Opening</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Issued</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Returned</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Received</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Net Used</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Closing</th>
+                <th class="text-center py-3 px-2 font-medium text-gray-700">Status</th>
+                <th class="text-center py-3 px-2 font-medium text-gray-700">7-Day</th>
+              </tr>
+            </thead>
+            <tbody id="stockSummaryTable"></tbody>
+          </table>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="text-sm font-medium text-gray-700 mb-3">Stock by Location</h3>
+          <div id="locationBreakdown" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+        </div>
+      </div>
+
+      <!-- By Driver Summary -->
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-forest-800 flex items-center gap-2">
+            <div class="bg-forest-100 p-2 rounded-xl">
+              <svg class="w-5 h-5 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+            By Driver Summary
+          </h2>
+          <div class="flex gap-2">
+            <button onclick="shareToWhatsApp(generateDriverSummaryReport())" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-sm transition-colors">📱 WhatsApp</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-200">
+                <th class="text-left py-3 px-2 font-medium text-gray-700">Driver</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Total Issued</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Total Returned</th>
+                <th class="text-right py-3 px-2 font-medium text-gray-700">Net Impact</th>
+                <th class="text-center py-3 px-2 font-medium text-gray-700">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="driverSummaryTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Material Movement Section -->
+    <div id="movementSection" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-forest-800 mb-0 flex items-center gap-2">
+            <div class="bg-forest-100 p-2 rounded-xl">
+              <svg class="w-5 h-5 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+            </div>
+            Material Movement Entry
+          </h2>
+          <div class="flex gap-2">
+            <button onclick="shareToWhatsApp(generateMovementFormReport())" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-sm transition-colors">📱 WhatsApp</button>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <input type="date" id="movementDate" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Driver</label>
+              <select id="movementDriver" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+                <option value="">Select Driver</option>
+                <option value="sanjay">Sanjay</option>
+                <option value="ajay">Ajay</option>
+                <option value="somnath">Somnath</option>
+                <option value="mahesh">Mahesh</option>
+                <option value="santosh">Santosh</option>
+                <option value="kaviraj">Kaviraj</option>
+                <option value="other">Others...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Party/Customer</label>
+              <input type="text" id="movementParty" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="Customer name">
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-xl p-4">
+            <h3 class="font-medium text-gray-800 mb-3">Material Items</h3>
+            <div id="materialItems" class="space-y-3"></div>
+            <button onclick="addMaterialRow()" class="mt-3 bg-olive-100 hover:bg-olive-200 text-olive-800 px-4 py-2 rounded-xl text-sm transition-colors">+ Add Item</button>
+          </div>
+
+          <div class="bg-gray-50 rounded-xl p-4">
+            <h3 class="font-medium text-gray-800 mb-3">Live Totals</h3>
+            <div id="liveTotals" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm"></div>
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="saveMaterialMovement()" class="bg-forest-600 hover:bg-forest-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">Save Movement</button>
+            <button onclick="clearMovementForm()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">Clear Form</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Driver Ledger Section -->
+    <div id="driverSection" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-forest-800 flex items-center gap-2">
+            <div class="bg-forest-100 p-2 rounded-xl">
+              <svg class="w-5 h-5 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            Driver Issue/Return Ledger
+          </h2>
+          <div class="flex gap-2">
+            <button onclick="shareToWhatsApp(generateLedgerFormReport())" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-sm transition-colors">📱 WhatsApp</button>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <input type="date" id="ledgerDate" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Driver</label>
+              <select id="ledgerDriver" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+                <option value="">Select Driver</option>
+                <option value="sanjay">Sanjay</option>
+                <option value="ajay">Ajay</option>
+                <option value="somnath">Somnath</option>
+                <option value="mahesh">Mahesh</option>
+                <option value="santosh">Santosh</option>
+                <option value="kaviraj">Kaviraj</option>
+                <option value="other">Others...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Movement Type</label>
+              <select id="ledgerMovement" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500">
+                <option value="issue">Issue (- stock)</option>
+                <option value="return">Return (+ stock)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+              <input type="text" id="ledgerNotes" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="Optional notes">
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded-xl p-4">
+            <h3 class="font-medium text-gray-800 mb-3">Items</h3>
+            <div id="ledgerItems" class="space-y-3"></div>
+            <button onclick="addLedgerRow()" class="mt-3 bg-olive-100 hover:bg-olive-200 text-olive-800 px-4 py-2 rounded-xl text-sm transition-colors">+ Add Item</button>
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="saveLedgerEntry()" class="bg-forest-600 hover:bg-forest-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">Save Entry</button>
+            <button onclick="clearLedgerForm()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">Clear Form</button>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-gray-50 rounded-xl p-4">
+          <h3 class="font-medium text-gray-800 mb-3">Per-Driver Totals</h3>
+          <div id="driverTotals" class="overflow-x-auto"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Godown Tracker Section -->
+    <div id="godownSection" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl p-6 card-shadow">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold text-forest-800 flex items-center gap-2">
+            <div class="bg-forest-100 p-2 rounded-xl">
+              <svg class="w-5 h-5 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            </div>
+            Godown & Outsource Stock Tracker
+          </h2>
+          <div class="flex gap-2">
+            <button onclick="shareToWhatsApp(generateGodownFormReport())" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-xl text-sm transition-colors">📱 WhatsApp</button>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Party/Customer</label><input type="text" id="trackerParty" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="Customer name"></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">From → To</label><input type="text" id="trackerRoute" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="Mumbai → Delhi"></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Location</label><select id="trackerLocation" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500"></select></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Dispatch Date</label><input type="date" id="trackerDispatch" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500"></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Team Leader</label><input type="text" id="trackerLeader" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="Team leader name"></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Where Now?</label><input type="text" id="trackerWhere" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus-border-olive-500" placeholder="Current location"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex items-center"><input type="checkbox" id="trackerPaper" class="w-4 h-4 text-olive-600 bg-gray-100 border-gray-300 rounded focus:ring-olive-500"><label for="trackerPaper" class="ml-2 text-sm font-medium text-gray-700">Paper Cleared</label></div>
+            <div class="flex items-center"><input type="checkbox" id="trackerPayment" class="w-4 h-4 text-olive-600 bg-gray-100 border-gray-300 rounded focus:ring-olive-500"><label for="trackerPayment" class="ml-2 text-sm font-medium text-gray-700">Payment Settled</label></div>
+            <div><label class="block text-sm font-medium text-gray-700 mb-1">Number of Items</label><input type="number" id="trackerItemCount" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500" placeholder="0" min="0" step="1"></div>
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="saveTrackerEntry()" class="bg-forest-600 hover:bg-forest-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">Save Entry</button>
+            <button onclick="clearTrackerForm()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">Clear Form</button>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="font-medium text-gray-800 mb-3">Current Holdings</h3>
+          <div id="holdingsList" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Stock Master Modal -->
+  <div id="stockMasterModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-forest-800">Stock Master</h2>
+          <button onclick="closeStockMaster()" class="text-gray-500 hover:text-gray-700"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+      </div>
+      <div class="p-6 space-y-6">
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 mb-4">Items Configuration</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-200">
+                  <th class="text-left py-3 px-2 font-medium text-gray-700">Item</th>
+                  <th class="text-left py-3 px-2 font-medium text-gray-700">Base Unit</th>
+                  <th class="text-right py-3 px-2 font-medium text-gray-700">Opening Stock</th>
+                  <th class="text-right py-3 px-2 font-medium text-gray-700">Reorder Threshold</th>
+                  <th class="text-left py-3 px-2 font-medium text-gray-700">Default Entry Unit</th>
+                </tr>
+              </thead>
+              <tbody id="stockMasterItems"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 mb-4">Locations</h3>
+          <div id="locationsList" class="space-y-2"></div>
+          <button onclick="addLocation()" class="mt-3 bg-olive-100 hover:bg-olive-200 text-olive-800 px-4 py-2 rounded-xl text-sm transition-colors">+ Add Location</button>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 mb-4">Import/Export</h3>
+          <div class="flex gap-3">
+            <button onclick="importCSV()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm transition-colors">📥 Import CSV</button>
+            <button onclick="exportStockMaster()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm transition-colors">📤 Export CSV</button>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button onclick="closeStockMaster()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-xl font-medium transition-colors">Close</button>
+          <button onclick="saveStockMaster()" class="bg-forest-600 hover:bg-forest-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Error overlay ----------
+    (function() {
+      function showErr(msg, trace) {
+        var box = document.getElementById('errorOverlay');
+        document.getElementById('errorMsg').textContent = msg || '';
+        document.getElementById('errorTrace').textContent = trace || '';
+        box.style.display = 'block';
+      }
+      window.addEventListener('error', function(e) {
+        showErr(String(e.message || e.error), (e.filename||'') + ':' + (e.lineno||'') + ':' + (e.colno||''));
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        showErr('Unhandled promise rejection', String(e.reason || ''));
+      });
+    })();
+
+    // ---------- Helpers ----------
+    function forEachSafe(list, fn) {
+      if (!list || typeof fn !== 'function') return;
+      if (Array.isArray(list)) { for (var i=0;i<list.length;i++) fn(list[i], i); return; }
+      var len = list.length;
+      if (typeof len === 'number') { for (var j=0;j<len;j++) fn(list[j], j); }
+    }
+    function mapSafe(list, fn) { var out=[]; forEachSafe(list, function(v,i){ out.push(fn(v,i)); }); return out; }
+
+    // -------------------- Global State --------------------
+    var WA_PHONE = '919338888550';
+
+    var stockMaster = {
+      items: {
+        carton: { name: 'Carton', baseUnit: 'pieces', openingStock: 0, reorderThreshold: 10, defaultUnit: 'pieces' },
+        corrugated: { name: 'Corrugated Sheet', baseUnit: 'pieces', openingStock: 0, reorderThreshold: 20, defaultUnit: 'pieces' },
+        lamination: { name: 'Lamination (Stretch Film)', baseUnit: 'percent', openingStock: 0, reorderThreshold: 100, defaultUnit: 'percent' },
+        bubble: { name: 'Bubble Sheet', baseUnit: 'percent', openingStock: 0, reorderThreshold: 100, defaultUnit: 'percent' },
+        foam: { name: 'Blue Foam', baseUnit: 'percent', openingStock: 0, reorderThreshold: 100, defaultUnit: 'percent' },
+        tape: { name: 'Cello Tape', baseUnit: 'pieces', openingStock: 0, reorderThreshold: 5, defaultUnit: 'pieces' }
+      },
+      locations: [
+        { key: 'godown', label: 'Godown' },
+        { key: 'vehicle', label: 'On Vehicle' },
+        { key: 'outsource', label: 'Outsource' },
+        { key: 'other', label: 'Other' }
+      ]
+    };
+
+    var movements = [];
+    var ledgerEntries = [];
+    var trackerEntries = [];
+    var quickStockEntries = [];
+
+    // -------------------- Init --------------------
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      normalizeLocationsOnLoad();
+      initializeDates();
+      renderLocationSelects();
+      updateDashboard();
+      checkFirstTime();
+      showSection('dashboard');
+    });
+
+    function resetAllData() {
+      localStorage.removeItem('stockMaster');
+      localStorage.removeItem('movements');
+      localStorage.removeItem('ledgerEntries');
+      localStorage.removeItem('trackerEntries');
+      localStorage.removeItem('quickStockEntries');
+      movements=[]; ledgerEntries=[]; trackerEntries=[]; quickStockEntries=[];
+      stockMaster.items.carton.openingStock = 0;
+      stockMaster.items.corrugated.openingStock = 0;
+      stockMaster.items.lamination.openingStock = 0;
+      stockMaster.items.bubble.openingStock = 0;
+      stockMaster.items.foam.openingStock = 0;
+      stockMaster.items.tape.openingStock = 0;
+      saveData();
+      updateDashboard();
+      showNotification('All data reset. Start fresh.', 'success');
+    }
+
+    function loadData() {
+      try {
+        var savedStockMaster = localStorage.getItem('stockMaster');
+        if (savedStockMaster) stockMaster = JSON.parse(savedStockMaster);
+        var savedMovements = localStorage.getItem('movements');
+        if (savedMovements) movements = JSON.parse(savedMovements);
+        var savedLedger = localStorage.getItem('ledgerEntries');
+        if (savedLedger) ledgerEntries = JSON.parse(savedLedger);
+        var savedTracker = localStorage.getItem('trackerEntries');
+        if (savedTracker) trackerEntries = JSON.parse(savedTracker);
+        var savedQuickStock = localStorage.getItem('quickStockEntries');
+        if (savedQuickStock) quickStockEntries = JSON.parse(savedQuickStock);
+      } catch (error) {
+        showNotification('Error loading data: ' + String(error), 'error');
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem('stockMaster', JSON.stringify(stockMaster));
+        localStorage.setItem('movements', JSON.stringify(movements));
+        localStorage.setItem('ledgerEntries', JSON.stringify(ledgerEntries));
+        localStorage.setItem('trackerEntries', JSON.stringify(trackerEntries));
+        localStorage.setItem('quickStockEntries', JSON.stringify(quickStockEntries));
+      } catch (error) {
+        showNotification('Error saving data: ' + String(error), 'error');
+      }
+    }
+
+    function normalizeLocationsOnLoad() {
+      if (Array.isArray(stockMaster.locations)) {
+        if (stockMaster.locations.length && typeof stockMaster.locations[0] === 'string') {
+          var converted = [];
+          forEachSafe(stockMaster.locations, function(label) {
+            var l = String(label).toLowerCase();
+            var key = l.replace(/\s+/g,'_');
+            if (l.indexOf('vehicle')>=0) key = 'vehicle';
+            if (l.indexOf('godown')>=0) key = 'godown';
+            if (l.indexOf('outsource')>=0) key = 'outsource';
+            if (l === 'other') key = 'other';
+            converted.push({ key: key, label: label });
+          });
+          stockMaster.locations = converted;
+        } else if (stockMaster.locations.length && !stockMaster.locations[0].key) {
+          var fixed = [];
+          forEachSafe(stockMaster.locations, function(o) {
+            var key = ((o && o.label) ? o.label : 'other').toLowerCase().replace(/\s+/g,'_');
+            fixed.push({ key: key, label: (o && o.label) ? o.label : 'Other' });
+          });
+          stockMaster.locations = fixed;
+        }
+      } else {
+        stockMaster.locations = [
+          { key:'godown', label:'Godown' },
+          { key:'vehicle', label:'On Vehicle' },
+          { key:'outsource', label:'Outsource' },
+          { key:'other', label:'Other' }
+        ];
+      }
+    }
+
+    function initializeDates() {
+      var today = new Date().toISOString().split('T')[0];
+      var md = document.getElementById('movementDate');
+      var ld = document.getElementById('ledgerDate');
+      var td = document.getElementById('trackerDispatch');
+      if (md) md.value = today;
+      if (ld) ld.value = today;
+      if (td) td.value = today;
+    }
+
+    function checkFirstTime() {
+      var hasData = (quickStockEntries && quickStockEntries.length>0) || (movements && movements.length>0);
+      var hasOpeningStock = false;
+      for (var k in stockMaster.items) {
+        if (Object.prototype.hasOwnProperty.call(stockMaster.items,k)) {
+          var it = stockMaster.items[k];
+          if (Number(it.openingStock)>0) { hasOpeningStock=true; break; }
+        }
+      }
+      if (!hasData && !hasOpeningStock) {
+        var b = document.getElementById('firstTimeBanner');
+        if (b) b.classList.remove('hidden');
+      }
+    }
+
+    function toggleMenu() { var m=document.getElementById('navMenu'); if (m) m.classList.toggle('hidden'); }
+
+    function showSection(section) {
+      var ids = ['dashboardSection','movementSection','driverSection','godownSection'];
+      forEachSafe(ids, function(id){ var el = document.getElementById(id); if (el) el.classList.add('hidden'); });
+      var target = document.getElementById(section+'Section');
+      if (target) target.classList.remove('hidden');
+      var menu = document.getElementById('navMenu'); if (menu) menu.classList.add('hidden');
+      if (section === 'movement') initializeMaterialMovement();
+      else if (section === 'driver') initializeDriverLedger();
+      else if (section === 'godown') initializeGodownTracker();
+    }
+
+    function openStockMaster() { var m=document.getElementById('stockMasterModal'); if (m) { m.classList.remove('hidden'); populateStockMaster(); } }
+    function closeStockMaster() { var m=document.getElementById('stockMasterModal'); if (m) m.classList.add('hidden'); }
+
+    function populateStockMaster() {
+      var tbody = document.getElementById('stockMasterItems');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      for (var key in stockMaster.items) {
+        if (!Object.prototype.hasOwnProperty.call(stockMaster.items, key)) continue;
+        var item = stockMaster.items[key];
+        var row = document.createElement('tr');
+        row.className = 'border-b border-gray-100';
+        row.innerHTML =
+          '<td class="py-3 px-2 font-medium">'+item.name+'</td>'+
+          '<td class="py-3 px-2 text-sm text-gray-600">'+item.baseUnit+'</td>'+
+          '<td class="py-3 px-2"><input type="number" value="'+(Number(item.openingStock)||0)+'" onchange="updateStockMasterItem(\''+key+'\',\'openingStock\',this.value)" class="w-24 p-1 border border-gray-300 rounded text-right text-sm"></td>'+
+          '<td class="py-3 px-2"><input type="number" value="'+(Number(item.reorderThreshold)||0)+'" onchange="updateStockMasterItem(\''+key+'\',\'reorderThreshold\',this.value)" class="w-24 p-1 border border-gray-300 rounded text-right text-sm"></td>'+
+          '<td class="py-3 px-2"><select onchange="updateStockMasterItem(\''+key+'\',\'defaultUnit\',this.value)" class="p-1 border border-gray-300 rounded text-sm"><option value="pieces"'+(item.defaultUnit==='pieces'?' selected':'')+'>Pieces</option><option value="percent"'+(item.defaultUnit==='percent'?' selected':'')+'>%</option></select></td>';
+        tbody.appendChild(row);
+      }
+
+      var list = document.getElementById('locationsList');
+      if (!list) return;
+      list.innerHTML = '';
+      forEachSafe(stockMaster.locations, function(loc, index) {
+        var div = document.createElement('div');
+        div.className = 'flex items-center gap-2';
+        div.innerHTML =
+          '<span class="text-xs rounded bg-gray-100 px-2 py-1">key: '+loc.key+'</span>'+
+          '<input type="text" value="'+loc.label+'" onchange="updateLocation('+index+', this.value)" class="flex-1 p-2 border border-gray-300 rounded-xl text-sm">'+
+          '<button onclick="removeLocation('+index+')" class="text-red-600 hover:text-red-800 p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+        list.appendChild(div);
+      });
+    }
+
+    function updateStockMasterItem(key, field, value) {
+      stockMaster.items[key][field] = (field === 'openingStock' || field === 'reorderThreshold') ? (parseFloat(value)||0) : value;
+    }
+
+    function updateLocation(index, label) { stockMaster.locations[index].label = label || 'Location'; renderLocationSelects(); }
+    function removeLocation(index) { stockMaster.locations.splice(index, 1); populateStockMaster(); renderLocationSelects(); }
+    function addLocation() { stockMaster.locations.push({ key: 'loc_'+Date.now(), label: 'New Location' }); populateStockMaster(); renderLocationSelects(); }
+    function saveStockMaster() { saveData(); updateDashboard(); closeStockMaster(); showNotification('Stock Master saved successfully!', 'success'); }
+
+    function renderLocationSelects() {
+      var quickSel = document.getElementById('quickLocation');
+      var trackerSel = document.getElementById('trackerLocation');
+      function render(sel) {
+        if (!sel) return;
+        var opts = '';
+        forEachSafe(stockMaster.locations, function(l) { opts += '<option value="'+l.key+'">'+l.label+'</option>'; });
+        sel.innerHTML = opts;
+      }
+      render(quickSel); render(trackerSel);
+    }
+
+    function openQuickStockEntry() { var b=document.getElementById('firstTimeBanner'); if (b) b.classList.add('hidden'); var q=document.getElementById('quickItem'); if (q) q.focus(); }
+
+    function addQuickStock() {
+      var item = document.getElementById('quickItem').value;
+      var qty = parseFloat(document.getElementById('quickQty').value) || 0;
+      var unit = document.getElementById('quickUnit').value;
+      var movement = document.getElementById('quickMovement').value;
+      var location = document.getElementById('quickLocation').value;
+      var reason = (document.getElementById('quickReason').value || '').trim();
+      if (!item || qty <= 0) { showNotification('Please select an item and enter a valid quantity', 'error'); return; }
+      var entry = { id: Date.now(), date: new Date().toISOString().split('T')[0], time: new Date().toLocaleTimeString(), item: item, quantity: qty, unit: unit, movement: movement, location: location, reason: reason, normalizedQuantity: normalizeQuantity(qty, unit) };
+      quickStockEntries.push(entry);
+      saveData(); updateDashboard(); clearQuickStockForm(); showNotification('Stock updated successfully!', 'success');
+    }
+
+    function clearQuickStockForm() {
+      document.getElementById('quickItem').value = '';
+      document.getElementById('quickQty').value = '';
+      document.getElementById('quickUnit').value = 'pieces';
+      document.getElementById('quickMovement').value = 'receive';
+      var ql = document.getElementById('quickLocation'); if (ql && ql.options.length) ql.selectedIndex = 0;
+      document.getElementById('quickReason').value = '';
+    }
+
+    function normalizeQuantity(qty, unit) { return unit === 'percent' ? (qty/100) : qty; }
+
+    function calculateCurrentStock(itemKey) {
+      var item = stockMaster.items[itemKey];
+      var stock = Number(item.openingStock)||0;
+
+      forEachSafe(quickStockEntries, function(entry) {
+        if (entry.item === itemKey) {
+          var q = entry.normalizedQuantity || 0;
+          if (entry.movement === 'receive' || entry.movement === 'adjust_plus') stock += q;
+          else if (entry.movement === 'adjust_minus' || entry.movement === 'writeoff') stock -= q;
+        }
+      });
+
+      forEachSafe(movements, function(movement) {
+        forEachSafe(movement.items, function(it) { if (it.material === itemKey) stock -= (it.normalizedQuantity || 0); });
+      });
+
+      forEachSafe(ledgerEntries, function(entry) {
+        if (entry.movement === 'issue') { forEachSafe(entry.items, function(it){ if (it.material === itemKey) stock -= (it.normalizedQuantity || 0); }); }
+        else if (entry.movement === 'return') { forEachSafe(entry.items, function(it){ if (it.material === itemKey) stock += (it.normalizedQuantity || 0); }); }
+      });
+
+      return stock;
+    }
+
+    function updateDashboard() { updateStockSummaryTable(); updateLocationBreakdown(); updateDriverSummary(); }
+
+    function updateStockSummaryTable() {
+      var tbody = document.getElementById('stockSummaryTable');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      var anyNegative = false;
+      for (var key in stockMaster.items) {
+        if (!Object.prototype.hasOwnProperty.call(stockMaster.items, key)) continue;
+        var item = stockMaster.items[key];
+        var opening = Number(item.openingStock)||0;
+        var issued = calculateTotalIssued(key);
+        var returned = calculateTotalReturned(key);
+        var received = calculateTotalReceived(key);
+        var netUsed = issued - returned;
+        var closing = calculateCurrentStock(key);
+        var isLow = closing < Number(item.reorderThreshold || 0);
+        if (closing < 0) anyNegative = true;
+        var tr = document.createElement('tr');
+        tr.className = 'border-b border-gray-100 hover:bg-gray-50 ' + (closing < 0 ? 'bg-red-50' : '');
+        tr.innerHTML =
+          '<td class="py-3 px-2 font-medium">'+item.name+'</td>'+
+          '<td class="py-3 px-2 text-right">'+opening.toFixed(1)+'</td>'+
+          '<td class="py-3 px-2 text-right text-red-600">'+issued.toFixed(1)+'</td>'+
+          '<td class="py-3 px-2 text-right text-green-600">'+returned.toFixed(1)+'</td>'+
+          '<td class="py-3 px-2 text-right text-blue-600">'+received.toFixed(1)+'</td>'+
+          '<td class="py-3 px-2 text-right font-medium">'+netUsed.toFixed(1)+'</td>'+
+          '<td class="py-3 px-2 text-right font-bold '+(closing<0?'text-red-700':'text-forest-700')+'">'+closing.toFixed(1)+'</td>'+
+          '<td class="py-3 px-2 text-center">'+(closing<0?'<span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs low-stock-badge">Negative</span>':(isLow?'<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs low-stock-badge">Low</span>':'<span class="text-green-600 text-xs">✓</span>'))+'</td>'+
+          '<td class="py-3 px-2 text-center"><div class="sparkline bg-gray-100 rounded"></div></td>';
+        tbody.appendChild(tr);
+      }
+      if (anyNegative) showNotification('Warning: Some items are below zero. Please adjust entries. (Non-blocking)', 'error');
+    }
+
+    function calculateTotalIssued(itemKey) {
+      var total = 0;
+      forEachSafe(movements, function(m){ forEachSafe(m.items, function(it){ if (it.material === itemKey) total += (it.normalizedQuantity || 0); }); });
+      forEachSafe(ledgerEntries, function(e){ if (e.movement === 'issue') forEachSafe(e.items, function(it){ if (it.material === itemKey) total += (it.normalizedQuantity || 0); }); });
+      return total;
+    }
+
+    function calculateTotalReturned(itemKey) {
+      var total = 0;
+      forEachSafe(ledgerEntries, function(e){ if (e.movement === 'return') forEachSafe(e.items, function(it){ if (it.material === itemKey) total += (it.normalizedQuantity || 0); }); });
+      return total;
+    }
+
+    function calculateTotalReceived(itemKey) {
+      var total = 0;
+      forEachSafe(quickStockEntries, function(entry){ if (entry.item === itemKey && (entry.movement === 'receive' || entry.movement === 'adjust_plus')) total += (entry.normalizedQuantity || 0); });
+      return total;
+    }
+
+    function findLocationLabel(key) {
+      for (var i=0;i<stockMaster.locations.length;i++) { if (stockMaster.locations[i].key === key) return stockMaster.locations[i].label; }
+      return key;
+    }
+
+    function updateLocationBreakdown() {
+      var container = document.getElementById('locationBreakdown');
+      if (!container) return;
+      container.innerHTML = '';
+      var netByLoc = {}; var recordsByLoc = {};
+      forEachSafe(stockMaster.locations, function(l){ netByLoc[l.key]=0; recordsByLoc[l.key]=0; });
+      forEachSafe(quickStockEntries, function(entry) {
+        var sign = (entry.movement === 'receive' || entry.movement === 'adjust_plus') ? 1 : -1;
+        if (netByLoc.hasOwnProperty(entry.location)) netByLoc[entry.location] += sign * (entry.normalizedQuantity || 0);
+      });
+      forEachSafe(trackerEntries, function(e) { if (recordsByLoc.hasOwnProperty(e.location)) recordsByLoc[e.location] += 1; });
+
+      forEachSafe(stockMaster.locations, function(loc) {
+        var pill = document.createElement('div');
+        pill.className = 'location-pill bg-olive-100 hover:bg-olive-200 p-3 rounded-xl cursor-pointer transition-all';
+        var qty = (netByLoc[loc.key] || 0).toFixed(1);
+        var rec = recordsByLoc[loc.key] || 0;
+        pill.innerHTML = '<div class="text-sm font-medium text-olive-800">'+loc.label+'</div><div class="text-xs text-olive-600">Net: '+qty+' • Records: '+rec+'</div>';
+        pill.onclick = function(){ showLocationDetails(loc.label); };
+        container.appendChild(pill);
+      });
+    }
+
+    function showLocationDetails(locationLabel) { showNotification('Showing details for '+locationLabel, 'info'); }
+
+    function updateDriverSummary() {
+      var tbody = document.getElementById('driverSummaryTable');
+      if (!tbody) return;
+      tbody.innerHTML='';
+      var drivers = ['sanjay','ajay','somnath','mahesh','santosh','kaviraj'];
+      forEachSafe(drivers, function(driver) {
+        var issued = calculateDriverIssued(driver);
+        var returned = calculateDriverReturned(driver);
+        var netImpact = issued - returned;
+        if (issued > 0 || returned > 0) {
+          var row = document.createElement('tr');
+          row.className = 'border-b border-gray-100 hover:bg-gray-50';
+          row.innerHTML =
+            '<td class="py-3 px-2 font-medium capitalize">'+driver+'</td>'+
+            '<td class="py-3 px-2 text-right text-red-600">'+issued.toFixed(1)+'</td>'+
+            '<td class="py-3 px-2 text-right text-green-600">'+returned.toFixed(1)+'</td>'+
+            '<td class="py-3 px-2 text-right font-medium '+(netImpact>0?'text-red-600':'text-green-600')+'">'+netImpact.toFixed(1)+'</td>'+
+            '<td class="py-3 px-2 text-center"><button onclick="showDriverDetails(\''+driver+'\')" class="bg-olive-100 hover:bg-olive-200 text-olive-800 px-3 py-1 rounded-lg text-xs transition-colors">View Details</button></td>';
+          tbody.appendChild(row);
+        }
+      });
+    }
+
+    function calculateDriverIssued(driver) {
+      var total = 0;
+      forEachSafe(movements, function(m){ if (m.driver === driver) forEachSafe(m.items, function(it){ total += (it.normalizedQuantity || 0); }); });
+      forEachSafe(ledgerEntries, function(e){ if (e.driver === driver && e.movement === 'issue') forEachSafe(e.items, function(it){ total += (it.normalizedQuantity || 0); }); });
+      return total;
+    }
+    function calculateDriverReturned(driver) {
+      var total = 0;
+      forEachSafe(ledgerEntries, function(e){ if (e.driver === driver && e.movement === 'return') forEachSafe(e.items, function(it){ total += (it.normalizedQuantity || 0); }); });
+      return total;
+    }
+    function showDriverDetails(driver) { showNotification('Showing details for '+driver, 'info'); }
+
+    // ---------- WhatsApp helpers & Reports (use true newlines) ----------
+    function shareToWhatsApp(message, phone) {
+      var target = phone || WA_PHONE;
+      // Ensure message uses actual newlines, not "\n" text
+      message = String(message).replace(/\\n/g, '\n').replace(/\/n/g, '\n');
+      var url = 'https://wa.me/' + target + '?text=' + encodeURIComponent(message);
+      window.open(url, '_blank');
+    }
+
+    function generateDashboardReport() {
+      var today = new Date().toLocaleDateString();
+      var lines = [];
+      lines.push('📊 Daily Stock Report - ' + today);
+      for (var key in stockMaster.items) {
+        if (!Object.prototype.hasOwnProperty.call(stockMaster.items, key)) continue;
+        var item = stockMaster.items[key];
+        var closing = calculateCurrentStock(key);
+        var issued = calculateTotalIssued(key);
+        var returned = calculateTotalReturned(key);
+        lines.push(item.name + ': ' + closing.toFixed(1) + ' (Issued: ' + issued.toFixed(1) + ', Returned: ' + returned.toFixed(1) + ')');
+      }
+      lines.push('📱 Generated by A to Z Packers & Movers Dashboard');
+      return lines.join('\n');
+    }
+
+    function generateMovementFormReport() {
+      var date = document.getElementById('movementDate').value || '';
+      var driver = document.getElementById('movementDriver').value || '';
+      var party = document.getElementById('movementParty').value || '';
+      var rows = document.querySelectorAll('#materialItems .grid');
+      var items = [];
+      forEachSafe(rows, function(row) {
+        var material = row.querySelector('.material-select').value;
+        var qty = parseFloat(row.querySelector('.material-qty').value) || 0;
+        var unit = row.querySelector('.material-unit').value;
+        if (material && qty>0) items.push({ material: material, qty: qty, unit: unit });
+      });
+      var lines = [];
+      lines.push('🚚 Material Movement');
+      if (date) lines.push('Date: ' + date);
+      if (driver) lines.push('Driver: ' + driver);
+      if (party) lines.push('Party: ' + party);
+      if (!items.length) { lines.push('No items added'); }
+      else {
+        lines.push('Items:');
+        forEachSafe(items, function(it){ lines.push('• ' + it.material + ' — ' + it.qty + ' ' + it.unit); });
+      }
+      return lines.join('\n');
+    }
+
+    function generateLedgerFormReport() {
+      var date = document.getElementById('ledgerDate').value || '';
+      var driver = document.getElementById('ledgerDriver').value || '';
+      var movement = document.getElementById('ledgerMovement').value || '';
+      var notes = document.getElementById('ledgerNotes').value || '';
+      var rows = document.querySelectorAll('#ledgerItems .grid');
+      var items = [];
+      forEachSafe(rows, function(row) {
+        var material = row.querySelector('.ledger-material').value;
+        var qty = parseFloat(row.querySelector('.ledger-qty').value) || 0;
+        var unit = row.querySelector('.ledger-unit').value;
+        if (material && qty>0) items.push({ material: material, qty: qty, unit: unit });
+      });
+      var lines = [];
+      lines.push('🧾 Driver ' + (movement==='return'?'Return':'Issue') + ' Ledger');
+      if (date) lines.push('Date: ' + date);
+      if (driver) lines.push('Driver: ' + driver);
+      if (notes) lines.push('Notes: ' + notes);
+      if (!items.length) { lines.push('No items added'); }
+      else {
+        lines.push('Items:');
+        forEachSafe(items, function(it){ lines.push('• ' + it.material + ' — ' + it.qty + ' ' + it.unit); });
+      }
+      return lines.join('\n');
+    }
+
+    function generateDriverSummaryReport() {
+      var lines = [];
+      lines.push('👷 By Driver Summary');
+      var drivers = ['sanjay','ajay','somnath','mahesh','santosh','kaviraj'];
+      forEachSafe(drivers, function(driver) {
+        var issued = calculateDriverIssued(driver);
+        var returned = calculateDriverReturned(driver);
+        var net = issued - returned;
+        if (issued>0 || returned>0) lines.push(driver + ': Issued ' + issued.toFixed(1) + ', Returned ' + returned.toFixed(1) + ', Net ' + net.toFixed(1));
+      });
+      if (lines.length===1) lines.push('No driver movements yet.');
+      return lines.join('\n');
+    }
+
+    function generateGodownFormReport() {
+      var party = document.getElementById('trackerParty').value || '';
+      var route = document.getElementById('trackerRoute').value || '';
+      var location = document.getElementById('trackerLocation').value || '';
+      var dispatch = document.getElementById('trackerDispatch').value || '';
+      var leader = document.getElementById('trackerLeader').value || '';
+      var whereNow = document.getElementById('trackerWhere').value || '';
+      var paper = document.getElementById('trackerPaper').checked;
+      var payment = document.getElementById('trackerPayment').checked;
+      var count = parseInt(document.getElementById('trackerItemCount').value || '0', 10);
+      var lines = [];
+      lines.push('🏷️ Godown/Outsource Tracker');
+      if (party) lines.push('Party: ' + party);
+      if (route) lines.push('Route: ' + route);
+      if (location) lines.push('Location: ' + findLocationLabel(location));
+      if (dispatch) lines.push('Dispatch: ' + dispatch);
+      if (leader) lines.push('Leader: ' + leader);
+      if (whereNow) lines.push('Where Now: ' + whereNow);
+      lines.push('Paper: ' + (paper?'Cleared':'Pending') + ' | Payment: ' + (payment?'Settled':'Pending'));
+      lines.push('Number of items: ' + (isNaN(count)?0:count));
+      return lines.join('\n');
+    }
+
+    // ---------- Export CSV ----------
+    function exportCSV() {
+      var data = [];
+      data.push(['Item','Opening','Issued','Returned','Received','Net Used','Closing']);
+      for (var key in stockMaster.items) {
+        if (!Object.prototype.hasOwnProperty.call(stockMaster.items, key)) continue;
+        var item = stockMaster.items[key];
+        var opening = Number(item.openingStock)||0;
+        var issued = calculateTotalIssued(key);
+        var returned = calculateTotalReturned(key);
+        var received = calculateTotalReceived(key);
+        var netUsed = issued - returned;
+        var closing = calculateCurrentStock(key);
+        data.push([item.name, opening, issued, returned, received, netUsed, closing]);
+      }
+      downloadCSV(data, 'stock_report.csv');
+    }
+
+    function downloadCSV(data, filename) {
+      var csv = '';
+      forEachSafe(data, function(row, i){ csv += row.join(',') + (i < data.length-1 ? '\n' : ''); });
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var url = window.URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    // -------------------- Material Movement --------------------
+    function initializeMaterialMovement() { addMaterialRow(); updateLiveTotals(); }
+
+    function addMaterialRow() {
+      var container = document.getElementById('materialItems');
+      var row = document.createElement('div');
+      row.className = 'grid grid-cols-1 md:grid-cols-5 gap-3 items-end';
+      row.innerHTML =
+        '<div><label class="block text-sm font-medium text-gray-700 mb-1">Material</label>'+
+        '<select class="material-select w-full p-2 border border-gray-300 rounded-xl text-sm" onchange="updateLiveTotals()">'+
+        '<option value="">Select Material</option><option value="carton">Carton</option><option value="corrugated">Corrugated Sheet</option><option value="lamination">Lamination</option><option value="bubble">Bubble Sheet</option><option value="foam">Blue Foam</option><option value="tape">Cello Tape</option>'+
+        '</select></div>'+
+        '<div><label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>'+
+        '<input type="number" class="material-qty w-full p-2 border border-gray-300 rounded-xl text-sm" placeholder="0" min="0" step="0.01" onchange="updateLiveTotals()"></div>'+
+        '<div><label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>'+
+        '<select class="material-unit w-full p-2 border border-gray-300 rounded-xl text-sm" onchange="updateLiveTotals()"><option value="pieces">Pieces</option><option value="percent">%</option></select></div>'+
+        '<div><label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>'+
+        '<input type="text" class="material-notes w-full p-2 border border-gray-300 rounded-xl text-sm" placeholder="Optional"></div>'+
+        '<div><button onclick="removeMaterialRow(this)" class="bg-red-100 hover:bg-red-200 text-red-800 p-2 rounded-xl transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div>';
+      container.appendChild(row);
+    }
+    function removeMaterialRow(btn) { var p = btn.closest('.grid'); if (p) p.parentNode.removeChild(p); updateLiveTotals(); }
+
+    function updateLiveTotals() {
+      var container = document.getElementById('liveTotals');
+      var totals = { issued: 0, returned: 0, netUsed: 0, closing: {} };
+      var rows = document.querySelectorAll('#materialItems .grid');
+      forEachSafe(rows, function(row) {
+        var material = row.querySelector('.material-select').value;
+        var qty = parseFloat(row.querySelector('.material-qty').value) || 0;
+        var unit = row.querySelector('.material-unit').value;
+        if (material && qty > 0) {
+          var normalized = normalizeQuantity(qty, unit);
+          totals.issued += normalized;
+          if (!Object.prototype.hasOwnProperty.call(totals.closing, material)) totals.closing[material] = calculateCurrentStock(material);
+          totals.closing[material] -= normalized;
+        }
+      });
+      totals.netUsed = totals.issued - totals.returned;
+      container.innerHTML =
+        '<div class="text-center"><div class="text-lg font-bold text-red-600">'+totals.issued.toFixed(1)+'</div><div class="text-xs text-gray-600">Total Issued</div></div>'+
+        '<div class="text-center"><div class="text-lg font-bold text-green-600">'+totals.returned.toFixed(1)+'</div><div class="text-xs text-gray-600">Total Returned</div></div>'+
+        '<div class="text-center"><div class="text-lg font-bold text-blue-600">'+totals.netUsed.toFixed(1)+'</div><div class="text-xs text-gray-600">Net Used</div></div>'+
+        '<div class="text-center"><div class="text-lg font-bold text-forest-600">'+Object.keys(totals.closing).length+'</div><div class="text-xs text-gray-600">Items Affected</div></div>';
+    }
+
+    function saveMaterialMovement() {
+      var date = document.getElementById('movementDate').value;
+      var driver = document.getElementById('movementDriver').value;
+      var party = document.getElementById('movementParty').value;
+      if (!date || !driver) { showNotification('Please fill in date and driver', 'error'); return; }
+
+      var items = [];
+      var rows = document.querySelectorAll('#materialItems .grid');
+      var negatives = [];
+      forEachSafe(rows, function(row) {
+        row.classList.remove('ring-2','ring-red-400');
+        var material = row.querySelector('.material-select').value;
+        var qty = parseFloat(row.querySelector('.material-qty').value) || 0;
+        var unit = row.querySelector('.material-unit').value;
+        var notes = row.querySelector('.material-notes').value;
+        if (material && qty > 0) {
+          var normalized = normalizeQuantity(qty, unit);
+          var predicted = calculateCurrentStock(material) - normalized;
+          if (predicted < 0) { negatives.push({ material: material, predicted: predicted }); row.classList.add('ring-2','ring-red-400'); }
+          items.push({ material: material, quantity: qty, unit: unit, notes: notes, normalizedQuantity: normalized });
+        }
+      });
+      if (!items.length) { showNotification('Please add at least one material item', 'error'); return; }
+      if (negatives.length) {
+        var msg = 'Non-blocking warning: This will make some items negative → ';
+        forEachSafe(negatives, function(n, i){ msg += (stockMaster.items[n.material] ? stockMaster.items[n.material].name : n.material) + ' (' + n.predicted.toFixed(1) + ')' + (i<negatives.length-1?', ':''); });
+        showNotification(msg, 'error');
+      }
+
+      var movement = { id: Date.now(), date: date, driver: driver, party: party, items: items, timestamp: new Date().toISOString() };
+      movements.push(movement);
+      saveData(); updateDashboard(); clearMovementForm(); showNotification('Material movement saved successfully!', 'success');
+    }
+    function clearMovementForm() { document.getElementById('movementDriver').value = ''; document.getElementById('movementParty').value = ''; document.getElementById('materialItems').innerHTML = ''; addMaterialRow(); updateLiveTotals(); }
+
+    // -------------------- Driver Ledger --------------------
+    function initializeDriverLedger() { addLedgerRow(); updateDriverTotals(); }
+    function addLedgerRow() {
+      var container = document.getElementById('ledgerItems');
+      var row = document.createElement('div');
+      row.className = 'grid grid-cols-1 md:grid-cols-4 gap-3 items-end';
+      row.innerHTML =
+        '<div><label class="block text-sm font-medium text-gray-700 mb-1">Material</label>'+
+        '<select class="ledger-material w-full p-2 border border-gray-300 rounded-xl text-sm">'+
+        '<option value="">Select Material</option><option value="carton">Carton</option><option value="corrugated">Corrugated Sheet</option><option value="lamination">Lamination</option><option value="bubble">Bubble Sheet</option><option value="foam">Blue Foam</option><option value="tape">Cello Tape</option>'+
+        '</select></div>'+
+        '<div><label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label><input type="number" class="ledger-qty w-full p-2 border border-gray-300 rounded-xl text-sm" placeholder="0" min="0" step="0.01"></div>'+
+        '<div><label class="block text-sm font-medium text-gray-700 mb-1">Unit</label><select class="ledger-unit w-full p-2 border border-gray-300 rounded-xl text-sm"><option value="pieces">Pieces</option><option value="percent">%</option></select></div>'+
+        '<div><button onclick="removeLedgerRow(this)" class="bg-red-100 hover:bg-red-200 text-red-800 p-2 rounded-xl transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div>';
+      container.appendChild(row);
+    }
+    function removeLedgerRow(btn) { var p = btn.closest('.grid'); if (p) p.parentNode.removeChild(p); }
+
+    function saveLedgerEntry() {
+      var date = document.getElementById('ledgerDate').value;
+      var driver = document.getElementById('ledgerDriver').value;
+      var movement = document.getElementById('ledgerMovement').value;
+      var notes = document.getElementById('ledgerNotes').value;
+      if (!date || !driver) { showNotification('Please fill in date and driver', 'error'); return; }
+
+      var items = [];
+      var rows = document.querySelectorAll('#ledgerItems .grid');
+      var negatives = [];
+      forEachSafe(rows, function(row) {
+        row.classList.remove('ring-2','ring-red-400');
+        var material = row.querySelector('.ledger-material').value;
+        var qty = parseFloat(row.querySelector('.ledger-qty').value) || 0;
+        var unit = row.querySelector('.ledger-unit').value;
+        if (material && qty > 0) {
+          var normalized = normalizeQuantity(qty, unit);
+          var delta = movement === 'issue' ? -normalized : normalized;
+          var predicted = calculateCurrentStock(material) + delta;
+          if (predicted < 0) { negatives.push({ material: material, predicted: predicted }); row.classList.add('ring-2','ring-red-400'); }
+          items.push({ material: material, quantity: qty, unit: unit, normalizedQuantity: normalized });
+        }
+      });
+      if (!items.length) { showNotification('Please add at least one item', 'error'); return; }
+      if (negatives.length) {
+        var msg = 'Non-blocking warning: This will make some items negative → ';
+        forEachSafe(negatives, function(n, i){ msg += (stockMaster.items[n.material] ? stockMaster.items[n.material].name : n.material) + ' (' + n.predicted.toFixed(1) + ')' + (i<negatives.length-1?', ':''); });
+        showNotification(msg, 'error');
+      }
+
+      var entry = { id: Date.now(), date: date, driver: driver, movement: movement, notes: notes, items: items, timestamp: new Date().toISOString() };
+      ledgerEntries.push(entry);
+      saveData(); updateDashboard(); updateDriverTotals(); clearLedgerForm(); showNotification('Ledger entry saved successfully!', 'success');
+    }
+    function clearLedgerForm() { document.getElementById('ledgerDriver').value = ''; document.getElementById('ledgerMovement').value = 'issue'; document.getElementById('ledgerNotes').value = ''; document.getElementById('ledgerItems').innerHTML = ''; addLedgerRow(); }
+
+    function updateDriverTotals() {
+      var container = document.getElementById('driverTotals');
+      if (!container) return;
+      var drivers = {};
+      forEachSafe(ledgerEntries, function(entry) {
+        if (!drivers[entry.driver]) drivers[entry.driver] = { issued: 0, returned: 0 };
+        forEachSafe(entry.items, function(it) {
+          var q = it.normalizedQuantity || 0;
+          if (entry.movement === 'issue') drivers[entry.driver].issued += q; else if (entry.movement === 'return') drivers[entry.driver].returned += q;
+        });
+      });
+      var html = '<table class="w-full text-sm"><thead><tr class="border-b border-gray-200">'+
+        '<th class="text-left py-2">Driver</th><th class="text-right py-2">Issued</th><th class="text-right py-2">Returned</th><th class="text-right py-2">Net</th></tr></thead><tbody>';
+      for (var d in drivers) {
+        if (!Object.prototype.hasOwnProperty.call(drivers,d)) continue;
+        var t = drivers[d]; var net = t.issued - t.returned;
+        html += '<tr class="border-b border-gray-100"><td class="py-2 capitalize">'+d+'</td><td class="py-2 text-right text-red-600">'+t.issued.toFixed(1)+'</td><td class="py-2 text-right text-green-600">'+t.returned.toFixed(1)+'</td><td class="py-2 text-right font-medium '+(net>0?'text-red-600':'text-green-600')+'">'+net.toFixed(1)+'</td></tr>';
+      }
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    // -------------------- Godown Tracker --------------------
+    function initializeGodownTracker() { updateHoldingsList(); }
+
+    function saveTrackerEntry() {
+      var party = document.getElementById('trackerParty').value;
+      var route = document.getElementById('trackerRoute').value;
+      var location = document.getElementById('trackerLocation').value;
+      var dispatch = document.getElementById('trackerDispatch').value;
+      var leader = document.getElementById('trackerLeader').value;
+      var whereNow = document.getElementById('trackerWhere').value;
+      var paperCleared = document.getElementById('trackerPaper').checked;
+      var paymentSettled = document.getElementById('trackerPayment').checked;
+      var itemCount = parseInt(document.getElementById('trackerItemCount').value || '0', 10);
+
+      if (!party || !route) { showNotification('Please fill in party and route', 'error'); return; }
+
+      var entry = {
+        id: Date.now(),
+        party: party,
+        route: route,
+        location: location,
+        dispatch: dispatch,
+        leader: leader,
+        whereNow: whereNow,
+        paperCleared: paperCleared,
+        paymentSettled: paymentSettled,
+        itemCount: isNaN(itemCount)?0:itemCount,
+        timestamp: new Date().toISOString()
+      };
+
+      trackerEntries.push(entry);
+      saveData();
+      updateDashboard();
+      updateHoldingsList();
+      clearTrackerForm();
+      showNotification('Tracker entry saved successfully!', 'success');
+    }
+
+    function clearTrackerForm() {
+      document.getElementById('trackerParty').value = '';
+      document.getElementById('trackerRoute').value = '';
+      var tl = document.getElementById('trackerLocation'); if (tl && tl.options.length) tl.selectedIndex = 0;
+      document.getElementById('trackerDispatch').value = new Date().toISOString().split('T')[0];
+      document.getElementById('trackerLeader').value = '';
+      document.getElementById('trackerWhere').value = '';
+      document.getElementById('trackerPaper').checked = false;
+      document.getElementById('trackerPayment').checked = false;
+      document.getElementById('trackerItemCount').value = '';
+    }
+
+    function updateHoldingsList() {
+      var container = document.getElementById('holdingsList');
+      if (!container) return;
+      container.innerHTML = '';
+      forEachSafe(trackerEntries, function(entry) {
+        var card = document.createElement('div');
+        card.className = 'bg-gray-50 rounded-xl p-4 border border-gray-200';
+        var locLabel = findLocationLabel(entry.location);
+        var locClass = entry.location === 'godown' ? 'bg-blue-100 text-blue-800' : (entry.location === 'vehicle' ? 'bg-yellow-100 text-yellow-800' : (entry.location === 'outsource' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'));
+        card.innerHTML =
+          '<div class="flex justify-between items-start mb-3">'+
+            '<div><h4 class="font-medium text-gray-800">'+entry.party+'</h4><p class="text-sm text-gray-600">'+entry.route+'</p></div>'+
+            '<div class="text-right"><span class="inline-block px-2 py-1 rounded-full text-xs '+locClass+'">'+locLabel+'</span></div>'+
+          '</div>'+
+          '<div class="grid grid-cols-2 gap-4 text-sm">'+
+            '<div><span class="text-gray-600">Dispatch:</span> '+(entry.dispatch||'N/A')+'</div>'+
+            '<div><span class="text-gray-600">Leader:</span> '+(entry.leader||'N/A')+'</div>'+
+            '<div><span class="text-gray-600">Where:</span> '+(entry.whereNow||'N/A')+'</div>'+
+            '<div><span class="text-gray-600">Status:</span> '+(entry.paperCleared?'📄':'⏳')+' '+(entry.paymentSettled?'💰':'⏳')+'</div>'+
+          '</div>'+
+          '<div class="mt-3 pt-3 border-t border-gray-200">'+
+            '<div class="text-xs text-gray-600 mb-1">Items:</div>'+
+            '<div class="flex flex-wrap gap-1"><span class="bg-white px-2 py-1 rounded text-xs">'+(entry.itemCount || 0)+' items</span></div>'+
+          '</div>';
+        container.appendChild(card);
+      });
+      if (!trackerEntries.length) container.innerHTML = '<p class="text-gray-500 text-center py-8">No holdings tracked yet</p>';
+    }
+
+    // ---------- Utilities ----------
+    function showNotification(message, type) {
+      if (type === void 0) type = 'info';
+      var notification = document.createElement('div');
+      notification.className = 'fixed top-4 right-4 z-50 p-4 rounded-xl shadow-lg transition-all duration-300 ' + (type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : (type === 'error' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-blue-100 text-blue-800 border border-blue-200'));
+      notification.innerHTML = '<div class="flex items-center gap-2"><div class="flex-1">'+message+'</div><button onclick="this.parentElement.parentElement.remove()" class="text-current opacity-70 hover:opacity-100"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>';
+      document.body.appendChild(notification);
+      setTimeout(function(){ if (notification && notification.parentNode) notification.parentNode.removeChild(notification); }, 5000);
+    }
+  </script>
+
+    <!-- ================== Driver Stock & Usage (added by ChatGPT) ================== -->
+    <section id="driver-stock-section" class="max-w-4xl mx-auto my-8 p-4 rounded-2xl shadow border border-gray-200">
+      <h2 class="text-xl font-semibold mb-3">🚚 Driver Stock & Usage</h2>
+      <p class="text-sm text-gray-600 mb-4">
+        Track what each driver <strong>received</strong>, what was <strong>used</strong>, and the <strong>remaining</strong> balance — item-wise & quantity-wise. Share reports to WhatsApp.
+      </p>
+
+      <!-- Controls -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4" data-chatgpt-driver-controls>
+        <div>
+          <label class="block text-sm font-medium mb-1">Driver</label>
+          <select id="driverSelect" class="w-full rounded-xl border-gray-300 p-2">
+            <option value="Sanjay">Sanjay</option>
+            <option value="Ajay">Ajay</option>
+            <option value="Somnath">Somnath</option>
+            <option value="Mahesh">Mahesh</option>
+            <option value="Santosh">Santosh</option>
+            <option value="Kaviraj">Kaviraj</option>
+            <option value="__ALL__">All Drivers</option>
+            <option value="__OTHER__">Other (enter)</option>
+          </select>
+        </div>
+
+        <div id="otherDriverWrap" class="hidden">
+          <label class="block text-sm font-medium mb-1">Other Driver Name</label>
+          <input id="otherDriverName" type="text" class="w-full rounded-xl border-gray-300 p-2" placeholder="Type driver name">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Item</label>
+          <select id="itemSelect" class="w-full rounded-xl border-gray-300 p-2">
+            <option value="Fabric Sheet">Fabric Sheet</option>
+            <option value="Cartons">Cartons</option>
+            <option value="Cello Tape">Cello Tape</option>
+            <option value="Bubble Sheet">Bubble Sheet</option>
+            <option value="Thermocol">Thermocol</option>
+            <option value="Lamination">Lamination</option>
+            <option value="Blue Foam">Blue Foam</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-sm font-medium mb-1">Qty</label>
+            <input id="qtyInput" type="number" min="0" step="1" class="w-full rounded-xl border-gray-300 p-2" placeholder="0">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Unit</label>
+            <select id="unitSelect" class="w-full rounded-xl border-gray-300 p-2">
+              <option value="pcs">pcs</option>
+              <option value="%">%</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mb-5">
+        <button id="btnAddReceived" type="button" class="px-4 py-2 rounded-xl shadow bg-emerald-600 text-white active:scale-[.98]">+ Add Received</button>
+        <button id="btnAddUsed" type="button" class="px-4 py-2 rounded-xl shadow bg-orange-600 text-white active:scale-[.98]">+ Add Used</button>
+
+        <button id="btnShareDriver" type="button" class="ml-auto px-4 py-2 rounded-xl shadow bg-sky-600 text-white active:scale-[.98]">Share Selected Driver</button>
+        <button id="btnShareAll" type="button" class="px-4 py-2 rounded-xl shadow bg-indigo-600 text-white active:scale-[.98]">Share All Drivers</button>
+      </div>
+
+      <!-- Aggregated table -->
+      <div class="overflow-x-auto rounded-xl border border-gray-200">
+        <table class="min-w-full text-sm" id="driverAggTable">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="text-left p-2">Item</th>
+              <th class="text-right p-2">Received</th>
+              <th class="text-right p-2">Used</th>
+              <th class="text-right p-2">Remaining</th>
+            </tr>
+          </thead>
+          <tbody id="driverAggBody">
+            <tr><td class="p-3 text-gray-500" colspan="4">No data yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Logs -->
+      <details class="mt-4 rounded-xl border border-gray-200 p-3">
+        <summary class="cursor-pointer font-medium">Show raw logs (selected driver)</summary>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+          <div>
+            <h3 class="font-medium mb-2">Received Log</h3>
+            <ul id="recvLog" class="list-disc pl-5 text-sm space-y-1"></ul>
+          </div>
+          <div>
+            <h3 class="font-medium mb-2">Used Log</h3>
+            <ul id="usedLog" class="list-disc pl-5 text-sm space-y-1"></ul>
+          </div>
+        </div>
+      </details>
+    </section>
+
+
+    <!-- Driver Stock & Usage scripts (added by ChatGPT) -->
+    <script>
+    (function(){
+      var KEY = "driverStockV1";
+      var itemList = ["Fabric Sheet","Cartons","Cello Tape","Bubble Sheet","Thermocol","Lamination","Blue Foam"];
+
+      function loadStore(){ try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ return {}; } }
+      function saveStore(store){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+
+      function getSelDriver(){
+        var sel = document.getElementById("driverSelect");
+        if (!sel) return null;
+        var v = sel.value;
+        if (v === "__OTHER__"){
+          var name = (document.getElementById("otherDriverName")?.value || "").trim();
+          return name || null;
+        }
+        return v;
+      }
+
+      function ensureDriver(store, name){
+        if (!store[name]) store[name] = { received: [], used: [] };
+      }
+
+      function addTxn(type){ // type: 'received' | 'used'
+        var driver = getSelDriver();
+        if (!driver){
+          alert("Please select/enter a driver name.");
+          return;
+        }
+        var item = document.getElementById("itemSelect")?.value || "Item";
+        var qty = parseFloat(document.getElementById("qtyInput")?.value || "0");
+        var unit = document.getElementById("unitSelect")?.value || "pcs";
+        if (!(qty > 0)){
+          alert("Please enter a quantity > 0");
+          return;
+        }
+
+        var store = loadStore();
+        ensureDriver(store, driver);
+        store[driver][type].push({
+          t: Date.now(),
+          item: item,
+          qty: qty,
+          unit: unit
+        });
+        saveStore(store);
+        render();
+      }
+
+      function aggregateForDriver(store, driver){
+        var R = {}; // item -> { recv: {pcs: n, '%': n}, used: {...} }
+        var bucket = store[driver] || {received:[],used:[]};
+        (bucket.received || []).forEach(function(e){
+          var unit = (e.unit === "%" ? "%" : "pcs");
+          if (!R[e.item]) R[e.item] = { recv: {pcs:0,"%":0}, used: {pcs:0,"%":0} };
+          R[e.item].recv[unit] += Number(e.qty) || 0;
+        });
+        (bucket.used || []).forEach(function(e){
+          var unit = (e.unit === "%" ? "%" : "pcs");
+          if (!R[e.item]) R[e.item] = { recv: {pcs:0,"%":0}, used: {pcs:0,"%":0} };
+          R[e.item].used[unit] += Number(e.qty) || 0;
+        });
+        return R;
+      }
+
+      function formatQtyPair(pair){
+        var parts = [];
+        if ((pair.pcs || 0) !== 0) parts.push((pair.pcs||0) + " pcs");
+        if ((pair["%"] || 0) !== 0) parts.push((pair["%"]||0) + " %");
+        return parts.join(" + ") || "0";
+      }
+
+      function subtractPairs(a, b){
+        return { pcs: (a.pcs||0) - (b.pcs||0), "%": (a["%"]||0) - (b["%"]||0) };
+      }
+
+      function renderAggFor(driver){
+        var store = loadStore();
+        var tbody = document.getElementById("driverAggBody");
+        if (!tbody) return;
+
+        // Clear
+        while(tbody.firstChild) tbody.removeChild(tbody.firstChild);
+
+        if (driver === "__ALL__"){
+          // Aggregate across all drivers
+          var total = {};
+          Object.keys(store).forEach(function(d){
+            var R = aggregateForDriver(store, d);
+            Object.keys(R).forEach(function(item){
+              if (!total[item]) total[item] = { recv: {pcs:0,"%":0}, used:{pcs:0,"%":0} };
+              total[item].recv.pcs += R[item].recv.pcs;
+              total[item].recv["%"] += R[item].recv["%"];
+              total[item].used.pcs += R[item].used.pcs;
+              total[item].used["%"] += R[item].used["%"];
+            });
+          });
+          var keys = Object.keys(total);
+          if (!keys.length){
+            var tr = document.createElement("tr");
+            tr.innerHTML = '<td class="p-3 text-gray-500" colspan="4">No data yet.</td>';
+            tbody.appendChild(tr);
+          } else {
+            keys.forEach(function(item){
+              var rem = subtractPairs(total[item].recv, total[item].used);
+              var tr = document.createElement("tr");
+              tr.innerHTML = '<td class="p-2">' + item + '</td>' +
+                             '<td class="p-2 text-right">' + formatQtyPair(total[item].recv) + '</td>' +
+                             '<td class="p-2 text-right">' + formatQtyPair(total[item].used) + '</td>' +
+                             '<td class="p-2 text-right">' + formatQtyPair(rem) + '</td>';
+              tbody.appendChild(tr);
+            });
+          }
+          // Logs area becomes empty for ALL
+          document.getElementById("recvLog").innerHTML = "";
+          document.getElementById("usedLog").innerHTML = "";
+          return;
+        }
+
+        // Single driver
+        var R = aggregateForDriver(store, driver);
+        var keys = Object.keys(R);
+        if (!keys.length){
+          var tr = document.createElement("tr");
+          tr.innerHTML = '<td class="p-3 text-gray-500" colspan="4">No data yet.</td>';
+          tbody.appendChild(tr);
+        } else {
+          keys.forEach(function(item){
+            var rem = subtractPairs(R[item].recv, R[item].used);
+            var tr = document.createElement("tr");
+            tr.innerHTML = '<td class="p-2">' + item + '</td>' +
+                           '<td class="p-2 text-right">' + formatQtyPair(R[item].recv) + '</td>' +
+                           '<td class="p-2 text-right">' + formatQtyPair(R[item].used) + '</td>' +
+                           '<td class="p-2 text-right">' + formatQtyPair(rem) + '</td>';
+            tbody.appendChild(tr);
+          });
+        }
+
+        // Logs for selected driver
+        var recvUl = document.getElementById("recvLog");
+        var usedUl = document.getElementById("usedLog");
+        recvUl.innerHTML = "";
+        usedUl.innerHTML = "";
+        var bucket = (loadStore()[driver] || {received:[],used:[]});
+        (bucket.received || []).forEach(function(e){
+          var li = document.createElement("li");
+          li.textContent = new Date(e.t).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " — " + e.item + " • " + e.qty + " " + e.unit;
+          recvUl.appendChild(li);
+        });
+        (bucket.used || []).forEach(function(e){
+          var li = document.createElement("li");
+          li.textContent = new Date(e.t).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " — " + e.item + " • " + e.qty + " " + e.unit;
+          usedUl.appendChild(li);
+        });
+      }
+
+      function shareSelected(){
+        var driver = getSelDriver();
+        if (!driver){
+          alert("Please select/enter a driver name.");
+          return;
+        }
+        var store = loadStore();
+        var msg = buildDriverReport(store, driver);
+        openWA(msg);
+      }
+
+      function shareAll(){
+        var store = loadStore();
+        var msg = buildAllDriversReport(store);
+        openWA(msg);
+      }
+
+      function openWA(text){
+        try {
+          if (window.openWhatsApp) return window.openWhatsApp(text);
+        } catch(e){}
+        var url = "https://wa.me/9338888550?text=" + encodeURIComponent(text);
+        window.open(url, "_blank");
+      }
+
+      function fmtPair(p){ return ((p.pcs||0) + " pcs") + ((p["%"]||0) ? (" + " + (p["%"]||0) + " %") : ""); }
+
+      function buildDriverReport(store, driver){
+        if (driver === "__ALL__") return buildAllDriversReport(store);
+        var hdr = "🚚 Driver Report — " + driver + "\n" +
+                  "Time: " + new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+        var R = aggregateForDriver(store, driver);
+        var keys = Object.keys(R);
+        var lines = [hdr];
+        if (!keys.length){
+          lines.push("No data yet.");
+          lines.push("— A to Z Packers & Movers");
+          return lines.join("\n");
+        }
+        keys.forEach(function(item){
+          var recv = R[item].recv, used = R[item].used;
+          var rem = { pcs: (recv.pcs||0)-(used.pcs||0), "%": (recv["%"]||0)-(used["%"]||0) };
+          lines.push("• " + item + ": Rec " + fmtPair(recv) + " | Used " + fmtPair(used) + " | Rem " + fmtPair(rem));
+        });
+        lines.push("— A to Z Packers & Movers");
+        return lines.join("\n");
+      }
+
+      function buildAllDriversReport(store){
+        var lines = [];
+        lines.push("📦 All Drivers — Stock & Usage");
+        lines.push("Time: " + new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }));
+
+        var names = Object.keys(store);
+        if (!names.length){
+          lines.push("No data yet.");
+          lines.push("— A to Z Packers & Movers");
+          return lines.join("\n");
+        }
+
+        names.forEach(function(driver){
+          lines.push("— " + driver + " —");
+          var R = aggregateForDriver(store, driver);
+          var keys = Object.keys(R);
+          if (!keys.length){
+            lines.push("(no items)");
+          } else {
+            keys.forEach(function(item){
+              var recv = R[item].recv, used = R[item].used;
+              var rem = { pcs: (recv.pcs||0)-(used.pcs||0), "%": (recv["%"]||0)-(used["%"]||0) };
+              lines.push("• " + item + ": Rec " + fmtPair(recv) + " | Used " + fmtPair(used) + " | Rem " + fmtPair(rem));
+            });
+          }
+        });
+        lines.push("— A to Z Packers & Movers");
+        return lines.join("\n");
+      }
+
+      function render(){
+        var sel = document.getElementById("driverSelect");
+        var otherWrap = document.getElementById("otherDriverWrap");
+        if (sel && otherWrap){
+          if (sel.value === "__OTHER__") otherWrap.classList.remove("hidden");
+          else otherWrap.classList.add("hidden");
+        }
+        renderAggFor(sel ? sel.value : "Sanjay");
+      }
+
+      // Wire up
+      document.addEventListener("change", function(evt){
+        if (evt.target && evt.target.id === "driverSelect") render();
+      });
+      var btnR = document.getElementById("btnAddReceived");
+      var btnU = document.getElementById("btnAddUsed");
+      var btnSD = document.getElementById("btnShareDriver");
+      var btnSA = document.getElementById("btnShareAll");
+      if (btnR) btnR.addEventListener("click", function(){ addTxn("received"); });
+      if (btnU) btnU.addEventListener("click", function(){ addTxn("used"); });
+      if (btnSD) btnSD.addEventListener("click", shareSelected);
+      if (btnSA) btnSA.addEventListener("click", shareAll);
+
+      // First render
+      render();
+    })();
+    </script>
+
+</body>
+</html>
