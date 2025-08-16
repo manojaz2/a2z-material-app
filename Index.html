@@ -1,0 +1,3931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A to Z Packers & Movers - Complete Moving Solutions with Live Tracking</title>
+    <meta name="description" content="Professional packers and movers in Odisha since 2005. Live tracking, cost calculator, and admin panel. Complete coverage of all 30 districts and every PIN code in India.">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            color: #1f2937; 
+            overflow-x: hidden; 
+        }
+        
+        /* Professional Color Scheme */
+        :root {
+            --primary-blue: #1e40af;
+            --secondary-blue: #3b82f6;
+            --accent-orange: #f59e0b;
+            --success-green: #059669;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* Loading Animation */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .loading-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+        
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 90px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.875rem;
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-icon:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin: 0;
+            line-height: 1.1;
+        }
+        
+        .logo-text p {
+            font-size: 0.875rem;
+            color: var(--secondary-blue);
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.1;
+        }
+        
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--secondary-blue);
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0.375rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background: var(--secondary-blue);
+            border-radius: 2px;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, var(--success-green), #047857);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(5, 150, 105, 0.25);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(5, 150, 105, 0.35);
+            background: linear-gradient(135deg, #047857, #065f46);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: var(--bg-light);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem;
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--secondary-blue);
+        }
+        
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+            z-index: 100;
+        }
+        
+        .mobile-menu.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .mobile-nav-links .nav-link {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            text-align: center;
+            background: var(--bg-light);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.95), rgba(59, 130, 246, 0.9)),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            line-height: 1.1;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2.5rem;
+            font-weight: 500;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+        
+        @media (min-width: 640px) {
+            .hero-buttons {
+                flex-direction: row;
+                justify-content: center;
+                gap: 1.5rem;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-orange), #d97706);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(245, 158, 11, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 1rem 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+            animation: fadeInUp 1s ease 0.8s both;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        /* Section Styles */
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .section-alt {
+            background: var(--bg-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            color: var(--text-gray);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .card-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .card-description {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        
+        /* Calculator Styles */
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow-hover);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        
+        .calculator-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .calculator-result {
+            background: linear-gradient(135deg, var(--success-green), #047857);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        .result-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .result-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        /* Tracking Styles */
+        .tracking-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow-hover);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        
+        .tracking-input {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tracking-input input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .tracking-input button {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tracking-result {
+            display: none;
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .tracking-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .status-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .status-in-transit {
+            background: linear-gradient(135deg, var(--accent-orange), #d97706);
+        }
+        
+        .status-delivered {
+            background: linear-gradient(135deg, var(--success-green), #047857);
+        }
+        
+        .tracking-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            border-left: 2px solid #e5e7eb;
+        }
+        
+        .timeline-item:last-child {
+            border-left: none;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--secondary-blue);
+        }
+        
+        .timeline-content {
+            margin-left: 1.5rem;
+        }
+        
+        .timeline-time {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-description {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+        
+        /* Admin Panel Styles */
+        .admin-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--shadow-hover);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        
+        .admin-login {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .admin-dashboard {
+            display: none;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .admin-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-tab.active {
+            color: var(--secondary-blue);
+            border-bottom-color: var(--secondary-blue);
+        }
+        
+        .admin-content {
+            display: none;
+        }
+        
+        .admin-content.active {
+            display: block;
+        }
+        
+        .shipment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+        
+        .shipment-table th,
+        .shipment-table td {
+            padding: 1.5rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: middle;
+        }
+        
+        .shipment-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+        
+        .shipment-table td:last-child {
+            min-width: 200px;
+            padding: 1.5rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-in-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        /* Testimonials */
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .testimonial-info h4 {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .testimonial-info p {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+        }
+        
+        .testimonial-rating {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .star {
+            color: #fbbf24;
+            font-size: 1.25rem;
+        }
+        
+        .testimonial-text {
+            color: var(--text-gray);
+            font-style: italic;
+            line-height: 1.6;
+        }
+        
+        /* Contact Form */
+        .contact-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-hover);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-submit {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-section ul li a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section ul li a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 2rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+        
+        /* Floating Elements */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: #25d366;
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        .floating-whatsapp:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 12px 35px rgba(37, 211, 102, 0.4);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3); }
+            50% { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5), 0 0 0 10px rgba(37, 211, 102, 0.1); }
+            100% { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3); }
+        }
+        
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links, .cta-button {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .header-content {
+                height: 80px;
+                padding: 0 1rem;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .logo-text h1 {
+                font-size: 1.375rem;
+            }
+            
+            .logo-text p {
+                font-size: 0.75rem;
+            }
+            
+            .hero-content {
+                padding: 0 1rem;
+            }
+            
+            .section {
+                padding: 3rem 0;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .grid {
+                gap: 1.5rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .contact-form, .calculator-container, .tracking-container, .admin-panel {
+                padding: 2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tracking-input {
+                flex-direction: column;
+            }
+        }
+        
+        /* Admin Modal Styles */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .admin-modal.active {
+            display: flex;
+        }
+        
+        .admin-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 1400px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+        
+        .admin-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-modal-close:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        /* Mobile responsive for tracking */
+        @media (max-width: 768px) {
+            .tracking-timeline {
+                padding-left: 1rem;
+            }
+            
+            .timeline-content {
+                margin-left: 1rem;
+            }
+            
+            .tracking-status {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .status-icon {
+                margin: 0 auto;
+            }
+            
+            .admin-modal-content {
+                padding: 2rem 1rem;
+                margin: 1rem;
+                max-height: 95vh;
+            }
+            
+            .admin-tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .admin-tab {
+                padding: 0.75rem 1rem;
+                text-align: center;
+            }
+            
+            .shipment-table {
+                font-size: 0.875rem;
+            }
+            
+            .shipment-table th,
+            .shipment-table td {
+                padding: 1rem 0.5rem;
+            }
+            
+            .shipment-table td:last-child {
+                min-width: 180px;
+                padding: 1rem 0.5rem;
+            }
+            
+            .shipment-table th:nth-child(4),
+            .shipment-table td:nth-child(4) {
+                display: none;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-8 { margin-top: 2rem; }
+        .hidden { display: none; }
+        .visible { display: block; }
+    </style>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <div class="loading-text">
+            <div>A to Z Packers & Movers</div>
+            <div class="loading-subtitle">Loading your complete moving solution...</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>A to Z Packers & Movers</h1>
+                    <p>Since 2005 • Complete Solutions</p>
+                </div>
+            </div>
+            
+            <nav class="nav">
+                <div class="nav-links">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#services" class="nav-link">Services</a>
+                    <a href="#calculator" class="nav-link">Calculator</a>
+                    <a href="#tracking" class="nav-link">Track</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                    <a href="#" class="nav-link" onclick="showAdminModal()">Admin</a>
+                </div>
+                
+                <a href="tel:+919338888559" class="cta-button">
+                    <i class="fas fa-phone"></i>
+                    Call Now
+                </a>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu">
+                <div class="mobile-nav-links">
+                    <a href="#home" class="nav-link" onclick="closeMobileMenu()">Home</a>
+                    <a href="#services" class="nav-link" onclick="closeMobileMenu()">Services</a>
+                    <a href="#calculator" class="nav-link" onclick="closeMobileMenu()">Calculator</a>
+                    <a href="#tracking" class="nav-link" onclick="closeMobileMenu()">Track</a>
+                    <a href="#contact" class="nav-link" onclick="closeMobileMenu()">Contact</a>
+                    <a href="#" class="nav-link" onclick="closeMobileMenu(); showAdminModal()">Admin</a>
+                    <a href="tel:+919338888559" class="cta-button" style="margin-top: 1rem; justify-content: center;">
+                        <i class="fas fa-phone"></i>
+                        Call Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Complete <span style="color: #fbbf24;">Moving Solutions</span> with Live Tracking
+            </h1>
+            <p class="hero-subtitle">
+                Professional packers & movers with real-time tracking, cost calculator, and admin panel. Serving all 30 districts of Odisha and every PIN code in India since 2005.
+            </p>
+            
+            <div class="hero-buttons">
+                <a href="#calculator" class="btn-primary">
+                    <i class="fas fa-calculator"></i>
+                    Calculate Cost
+                </a>
+                <a href="#tracking" class="btn-secondary">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Track Shipment
+                </a>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">19+</span>
+                    <span class="stat-label">Years of Excellence</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">15K+</span>
+                    <span class="stat-label">Happy Customers</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">30</span>
+                    <span class="stat-label">Districts Covered</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Live Tracking</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Professional Services</h2>
+                <p class="section-subtitle">Comprehensive moving solutions with live tracking and transparent pricing</p>
+            </div>
+            
+            <div class="grid grid-4">
+                <div class="card text-center">
+                    <div class="card-icon" style="margin: 0 auto;">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3 class="card-title">Household Shifting</h3>
+                    <p class="card-description">Complete home relocation with professional packing, live tracking, and safe transportation to your new location.</p>
+                </div>
+                
+                <div class="card text-center">
+                    <div class="card-icon" style="margin: 0 auto; background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="card-title">Office Relocation</h3>
+                    <p class="card-description">Seamless office moves with minimal downtime, specialized IT equipment handling, and real-time progress updates.</p>
+                </div>
+                
+                <div class="card text-center">
+                    <div class="card-icon" style="margin: 0 auto; background: linear-gradient(135deg, #ef4444, #dc2626);">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3 class="card-title">Vehicle Transport</h3>
+                    <p class="card-description">Safe car and bike transportation with GPS tracking, door-to-door delivery, and comprehensive insurance coverage.</p>
+                </div>
+                
+                <div class="card text-center">
+                    <div class="card-icon" style="margin: 0 auto; background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="fas fa-warehouse"></i>
+                    </div>
+                    <h3 class="card-title">Storage Solutions</h3>
+                    <p class="card-description">Secure warehousing with climate control, 24/7 security monitoring, and flexible storage duration options.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cost Calculator Section -->
+    <section class="section section-alt" id="calculator">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Moving Cost Calculator</h2>
+                <p class="section-subtitle">Get an instant estimate for your moving costs with our advanced calculator</p>
+            </div>
+            
+            <div class="calculator-container">
+                <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-dark); text-align: center;">
+                    <i class="fas fa-calculator" style="margin-right: 0.5rem; color: var(--secondary-blue);"></i>
+                    Calculate Your Moving Cost
+                </h3>
+                
+                <form class="calculator-form" id="calculatorForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">From City *</label>
+                            <input type="text" id="fromCity" required class="form-input" placeholder="Current city">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">To City *</label>
+                            <input type="text" id="toCity" required class="form-input" placeholder="Destination city">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Service Type *</label>
+                            <select id="serviceType" required class="form-input">
+                                <option value="">Select Service</option>
+                                <option value="household">Household Shifting</option>
+                                <option value="office">Office Relocation</option>
+                                <option value="vehicle">Vehicle Transport</option>
+                                <option value="storage">Storage Solutions</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Home Size *</label>
+                            <select id="homeSize" required class="form-input">
+                                <option value="">Select Size</option>
+                                <option value="1bhk">1 BHK</option>
+                                <option value="2bhk">2 BHK</option>
+                                <option value="3bhk">3 BHK</option>
+                                <option value="4bhk">4+ BHK</option>
+                                <option value="villa">Villa/Independent House</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Distance (KM) *</label>
+                            <input type="number" id="distance" required class="form-input" placeholder="Approximate distance" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Moving Date</label>
+                            <input type="date" id="movingDate" class="form-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Additional Services</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" id="packing" value="packing">
+                                Professional Packing (+₹2,000)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" id="insurance" value="insurance">
+                                Insurance Coverage (+₹1,500)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" id="unpacking" value="unpacking">
+                                Unpacking Service (+₹1,000)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal;">
+                                <input type="checkbox" id="storage" value="storage">
+                                Temporary Storage (+₹3,000)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="form-submit">
+                        <i class="fas fa-calculator" style="margin-right: 0.5rem;"></i>
+                        Calculate Cost
+                    </button>
+                </form>
+                
+                <div id="calculatorResult" class="calculator-result">
+                    <div class="result-amount" id="resultAmount">₹0</div>
+                    <div class="result-label">Estimated Moving Cost</div>
+                    <p style="margin-top: 1rem; opacity: 0.9; font-size: 0.9rem;">
+                        *This is an approximate estimate. Final cost may vary based on actual requirements and site inspection.
+                    </p>
+                    <button onclick="requestQuote()" style="background: white; color: var(--success-green); padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; margin-top: 1rem; cursor: pointer;">
+                        Request Detailed Quote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tracking Section -->
+    <section class="section" id="tracking">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Live Shipment Tracking</h2>
+                <p class="section-subtitle">Track your shipment in real-time with our advanced GPS tracking system</p>
+            </div>
+            
+            <div class="tracking-container">
+                <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-dark); text-align: center;">
+                    <i class="fas fa-map-marker-alt" style="margin-right: 0.5rem; color: var(--secondary-blue);"></i>
+                    Track Your Shipment
+                </h3>
+                
+                <div class="tracking-input">
+                    <input type="text" id="trackingId" placeholder="Enter your tracking ID (e.g., ATZ2024001)" style="text-transform: uppercase;">
+                    <button onclick="trackShipment()">
+                        <i class="fas fa-search"></i>
+                        Track Now
+                    </button>
+                </div>
+                
+                <div id="trackingResult" class="tracking-result">
+                    <div class="tracking-status">
+                        <div id="statusIcon" class="status-icon status-in-transit">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div>
+                            <h3 id="statusTitle" style="color: var(--text-dark); margin-bottom: 0.5rem;">In Transit</h3>
+                            <p id="statusDescription" style="color: var(--text-gray);">Your shipment is on the way to destination</p>
+                            <p style="color: var(--text-gray); font-size: 0.875rem; margin-top: 0.25rem;">
+                                <strong>Tracking ID:</strong> <span id="displayTrackingId">ATZ2024001</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="tracking-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">Today, 2:30 PM</div>
+                                <div class="timeline-title">Out for Delivery</div>
+                                <div class="timeline-description">Your shipment is out for delivery and will reach you soon</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">Today, 10:15 AM</div>
+                                <div class="timeline-title">Reached Destination Hub</div>
+                                <div class="timeline-description">Shipment has reached the destination city hub</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">Yesterday, 6:45 PM</div>
+                                <div class="timeline-title">In Transit</div>
+                                <div class="timeline-description">Shipment is in transit to destination city</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-time">Yesterday, 9:00 AM</div>
+                                <div class="timeline-title">Picked Up</div>
+                                <div class="timeline-description">Shipment has been picked up from origin location</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: white; padding: 1.5rem; border-radius: 12px; margin-top: 2rem; border: 1px solid #e5e7eb;">
+                        <h4 style="color: var(--text-dark); margin-bottom: 1rem; display: flex; align-items: center;">
+                            <i class="fas fa-info-circle" style="color: var(--secondary-blue); margin-right: 0.5rem;"></i>
+                            Shipment Details
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div>
+                                <strong style="color: var(--text-gray); font-size: 0.875rem;">From:</strong><br>
+                                <span id="trackingFrom" style="font-weight: 600; color: var(--text-dark);">Cuttack, Odisha</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--text-gray); font-size: 0.875rem;">To:</strong><br>
+                                <span id="trackingTo" style="font-weight: 600; color: var(--text-dark);">Bhubaneswar, Odisha</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--text-gray); font-size: 0.875rem;">Service:</strong><br>
+                                <span id="trackingService" style="font-weight: 600; color: var(--text-dark);">Household Shifting</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--text-gray); font-size: 0.875rem;">Expected Delivery:</strong><br>
+                                <span id="trackingETA" style="font-weight: 600; color: var(--success-green); display: block; margin-top: 0.25rem;">Today, 5:00 PM</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Details Section -->
+                        <div id="additionalTrackingDetails" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <strong style="color: var(--text-gray); font-size: 0.875rem;">Distance:</strong><br>
+                                    <span id="trackingDistance" style="font-weight: 600; color: var(--text-dark);">28 KM</span>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--text-gray); font-size: 0.875rem;">Vehicle:</strong><br>
+                                    <span id="trackingVehicle" style="font-weight: 600; color: var(--text-dark);">OD-05-AB-1234</span>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--text-gray); font-size: 0.875rem;">Driver:</strong><br>
+                                    <span id="trackingDriver" style="font-weight: 600; color: var(--text-dark);">Suresh Kumar</span>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--text-gray); font-size: 0.875rem;">Driver Contact:</strong><br>
+                                    <a href="#" id="trackingDriverPhone" style="font-weight: 600; color: var(--secondary-blue); text-decoration: none;">+91 9876543211</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: var(--bg-light); border-radius: 12px;">
+                    <p style="color: var(--text-gray); margin-bottom: 1rem;">Need help with your shipment?</p>
+                    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                        <a href="tel:+919338888559" style="background: var(--secondary-blue); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-phone"></i>
+                            Call Support
+                        </a>
+                        <a href="https://wa.me/919338888559" style="background: #25d366; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fab fa-whatsapp"></i>
+                            WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Testimonials Section -->
+    <section class="section" id="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Our Customers Say</h2>
+                <p class="section-subtitle">Real experiences from satisfied customers across Odisha and India</p>
+            </div>
+            
+            <div class="grid grid-3">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">R</div>
+                        <div class="testimonial-info">
+                            <h4>Rajesh Kumar</h4>
+                            <p>Bhubaneswar • Household Shifting</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                    <p class="testimonial-text">"Excellent service with live tracking! I could monitor my household items throughout the journey from Cuttack to Bhubaneswar. The cost calculator was very accurate too. Highly recommended!"</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">P</div>
+                        <div class="testimonial-info">
+                            <h4>Priya Sharma</h4>
+                            <p>Rourkela • Office Relocation</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                    <p class="testimonial-text">"Outstanding office relocation with real-time updates! The tracking system kept us informed at every step. Professional team, transparent pricing, and zero downtime. Perfect service!"</p>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">A</div>
+                        <div class="testimonial-info">
+                            <h4>Amit Patel</h4>
+                            <p>Berhampur • Vehicle Transport</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                        <i class="fas fa-star star"></i>
+                    </div>
+                    <p class="testimonial-text">"Best car transportation with GPS tracking! I could see exactly where my car was throughout the journey to Delhi. The cost calculator helped me budget perfectly. Trustworthy and reliable!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section section-alt" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get Your Free Quote Today</h2>
+                <p class="section-subtitle">Ready to move? Contact us for a personalized quote with live tracking included</p>
+            </div>
+            
+            <div class="grid grid-2">
+                <!-- Contact Form -->
+                <div class="contact-form">
+                    <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-dark);">Request Free Quote</h3>
+                    <form id="contactForm" onsubmit="submitForm(event)">
+                        <div class="form-group">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" name="name" required class="form-input" placeholder="Enter your full name">
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Phone Number *</label>
+                                <input type="tel" name="phone" required class="form-input" placeholder="+91 9876543210">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" name="email" class="form-input" placeholder="your@email.com">
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">From City *</label>
+                                <input type="text" name="fromCity" required class="form-input" placeholder="Current city">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">To City *</label>
+                                <input type="text" name="toCity" required class="form-input" placeholder="Destination city">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Service Type *</label>
+                            <select name="serviceType" required class="form-input">
+                                <option value="">Select Service Type</option>
+                                <option value="household">Household Shifting</option>
+                                <option value="office">Office Relocation</option>
+                                <option value="vehicle">Vehicle Transport</option>
+                                <option value="storage">Storage Solutions</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Moving Date</label>
+                            <input type="date" name="movingDate" class="form-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Additional Details</label>
+                            <textarea name="message" class="form-input form-textarea" placeholder="Tell us about your moving requirements, home size, special items, etc."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="form-submit">
+                            <i class="fas fa-paper-plane" style="margin-right: 0.5rem;"></i>
+                            Get Free Quote with Tracking
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Information -->
+                <div>
+                    <div class="card mb-6">
+                        <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-dark);">Contact Information</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 2rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--success-green), #047857); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--text-dark);">Phone Number</strong><br>
+                                    <a href="tel:+919338888559" style="color: var(--secondary-blue); text-decoration: none; font-size: 1.1rem;">+91 9338888559</a>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #25d366, #128c7e); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--text-dark);">WhatsApp</strong><br>
+                                    <a href="https://wa.me/919338888559" style="color: var(--secondary-blue); text-decoration: none; font-size: 1.1rem;">+91 9338888559</a>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--text-dark);">Headquarters</strong><br>
+                                    <span style="color: var(--text-gray);">Cuttack, Odisha, India</span>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent-orange), #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--text-dark);">Business Hours</strong><br>
+                                    <span style="color: var(--text-gray);">24/7 Customer Support</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Contact Buttons -->
+                    <div class="card" style="background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); color: white; text-align: center;">
+                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: white;">Need Immediate Assistance?</h3>
+                        <p style="margin-bottom: 2rem; opacity: 0.9;">Our team is ready to help you 24/7 with live tracking support</p>
+                        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                            <a href="tel:+919338888559" style="background: white; color: var(--primary-blue); padding: 1rem 1.5rem; border-radius: 10px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                                <i class="fas fa-phone"></i>
+                                Call Now
+                            </a>
+                            <a href="https://wa.me/919338888559" style="background: #25d366; color: white; padding: 1rem 1.5rem; border-radius: 10px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>A to Z Packers & Movers</h3>
+                    <p style="color: #d1d5db; margin-bottom: 1.5rem;">Odisha's most trusted moving company since 2005. Professional, reliable, and customer-focused relocation services with live tracking.</p>
+                    <div style="display: flex; gap: 1rem;">
+                        <a href="tel:+919338888559" style="color: #d1d5db; font-size: 1.25rem; transition: color 0.3s ease;">
+                            <i class="fas fa-phone"></i>
+                        </a>
+                        <a href="https://wa.me/919338888559" style="color: #d1d5db; font-size: 1.25rem; transition: color 0.3s ease;">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Our Services</h3>
+                    <ul>
+                        <li><a href="#services">Household Shifting</a></li>
+                        <li><a href="#services">Office Relocation</a></li>
+                        <li><a href="#services">Vehicle Transport</a></li>
+                        <li><a href="#services">Storage Solutions</a></li>
+                        <li><a href="#services">Live Tracking</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Tools & Features</h3>
+                    <ul>
+                        <li><a href="#calculator">Cost Calculator</a></li>
+                        <li><a href="#tracking">Live Tracking</a></li>
+                        <li><a href="#admin">Admin Panel</a></li>
+                        <li><a href="#contact">Free Quote</a></li>
+                        <li><a href="#testimonials">Customer Reviews</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Coverage Areas</h3>
+                    <ul>
+                        <li><a href="#">All 30 Districts of Odisha</a></li>
+                        <li><a href="#">Pan-India Coverage</a></li>
+                        <li><a href="#">Local & Long Distance</a></li>
+                        <li><a href="#">Interstate Moving</a></li>
+                        <li><a href="#">International Shipping</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 A to Z Packers & Movers. All rights reserved. | Licensed & Insured | Live Tracking Enabled | Serving Odisha since 2005</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/919338888559" class="floating-whatsapp" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top" id="scrollTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Admin Modal -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-modal-content">
+            <button class="admin-modal-close" onclick="closeAdminModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Admin Login -->
+            <div id="adminLogin" class="admin-login">
+                <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 2rem; color: var(--text-dark); text-align: center;">
+                    <i class="fas fa-user-shield" style="margin-right: 0.5rem; color: var(--secondary-blue);"></i>
+                    Admin Login
+                </h3>
+                
+                <form onsubmit="adminLogin(event)" style="max-width: 400px; margin: 0 auto;">
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="adminUsername" required class="form-input" placeholder="Enter admin username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="adminPassword" required class="form-input" placeholder="Enter admin password">
+                    </div>
+                    <button type="submit" class="form-submit">
+                        <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                        Login to Dashboard
+                    </button>
+                </form>
+                
+                <div style="margin-top: 2rem; padding: 1rem; background: #fef3c7; border-radius: 8px; border: 1px solid #f59e0b; max-width: 400px; margin-left: auto; margin-right: auto;">
+                    <p style="color: #92400e; font-size: 0.875rem; margin: 0; text-align: center;">
+                        <strong>Demo Credentials:</strong><br>
+                        Username: admin<br>
+                        Password: admin123
+                    </p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <a href="#" onclick="showForgotPasswordModal()" style="color: var(--secondary-blue); text-decoration: none; font-size: 0.875rem; font-weight: 600;">
+                        <i class="fas fa-question-circle" style="margin-right: 0.25rem;"></i>
+                        Forgot Password?
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Admin Dashboard -->
+            <div id="adminDashboard" class="admin-dashboard">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                    <h3 style="font-size: 1.75rem; font-weight: 700; color: var(--text-dark);">
+                        <i class="fas fa-tachometer-alt" style="margin-right: 0.5rem; color: var(--secondary-blue);"></i>
+                        Admin Dashboard
+                    </h3>
+                    <button onclick="adminLogout()" style="background: #ef4444; color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+                
+                <!-- Admin Tabs -->
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="showAdminTab('shipments')">
+                        <i class="fas fa-shipping-fast"></i>
+                        Shipments
+                    </button>
+                    <button class="admin-tab" onclick="showAdminTab('customers')">
+                        <i class="fas fa-users"></i>
+                        Customers
+                    </button>
+                    <button class="admin-tab" onclick="showAdminTab('analytics')">
+                        <i class="fas fa-chart-bar"></i>
+                        Analytics
+                    </button>
+                    <button class="admin-tab" onclick="showAdminTab('settings')">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </button>
+                </div>
+                
+                <!-- Shipments Tab -->
+                <div id="shipmentsTab" class="admin-content active">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <h4 style="color: var(--text-dark);">Recent Shipments</h4>
+                        <button onclick="addNewShipment()" style="background: var(--success-green); color: white; padding: 0.5rem 1rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                            <i class="fas fa-plus"></i>
+                            Add Shipment
+                        </button>
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="shipment-table">
+                            <thead>
+                                <tr>
+                                    <th>Tracking ID</th>
+                                    <th>Customer</th>
+                                    <th>From → To</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shipmentsTableBody">
+                                <tr>
+                                    <td><strong>ATZ2024001</strong></td>
+                                    <td>Rajesh Kumar<br><small style="color: var(--text-gray);">+91 9876543210</small></td>
+                                    <td>Cuttack → Bhubaneswar</td>
+                                    <td>Household</td>
+                                    <td><span class="status-badge status-in-progress">In Transit</span></td>
+                                    <td>Dec 15, 2024</td>
+                                    <td>
+                                        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                                            <button onclick="editShipmentStatus('ATZ2024001')" style="background: var(--secondary-blue); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); min-width: 80px;" title="Update Status">
+                                                <i class="fas fa-edit" style="font-size: 1.1rem;"></i>
+                                                <span>EDIT</span>
+                                            </button>
+                                            <button onclick="viewShipment('ATZ2024001')" style="background: var(--success-green); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3); min-width: 80px;" title="View Details">
+                                                <i class="fas fa-eye" style="font-size: 1.1rem;"></i>
+                                                <span>VIEW</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ATZ2024002</strong></td>
+                                    <td>Priya Sharma<br><small style="color: var(--text-gray);">+91 9123456789</small></td>
+                                    <td>Rourkela → Delhi</td>
+                                    <td>Office</td>
+                                    <td><span class="status-badge status-completed">Delivered</span></td>
+                                    <td>Dec 14, 2024</td>
+                                    <td>
+                                        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                                            <button onclick="editShipmentStatus('ATZ2024002')" style="background: var(--secondary-blue); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); min-width: 80px;" title="Update Status">
+                                                <i class="fas fa-edit" style="font-size: 1.1rem;"></i>
+                                                <span>EDIT</span>
+                                            </button>
+                                            <button onclick="viewShipment('ATZ2024002')" style="background: var(--success-green); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3); min-width: 80px;" title="View Details">
+                                                <i class="fas fa-eye" style="font-size: 1.1rem;"></i>
+                                                <span>VIEW</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ATZ2024003</strong></td>
+                                    <td>Amit Patel<br><small style="color: var(--text-gray);">+91 9988776655</small></td>
+                                    <td>Berhampur → Mumbai</td>
+                                    <td>Vehicle</td>
+                                    <td><span class="status-badge status-pending">Booking</span></td>
+                                    <td>Dec 16, 2024</td>
+                                    <td>
+                                        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                                            <button onclick="editShipmentStatus('ATZ2024003')" style="background: var(--secondary-blue); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); min-width: 80px;" title="Update Status">
+                                                <i class="fas fa-edit" style="font-size: 1.1rem;"></i>
+                                                <span>EDIT</span>
+                                            </button>
+                                            <button onclick="viewShipment('ATZ2024003')" style="background: var(--success-green); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3); min-width: 80px;" title="View Details">
+                                                <i class="fas fa-eye" style="font-size: 1.1rem;"></i>
+                                                <span>VIEW</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Customers Tab -->
+                <div id="customersTab" class="admin-content">
+                    <h4 style="color: var(--text-dark); margin-bottom: 1.5rem;">Customer Management</h4>
+                    <div class="grid grid-3">
+                        <div class="card text-center">
+                            <div class="card-icon" style="margin: 0 auto; background: linear-gradient(135deg, var(--success-green), #047857);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3 class="card-title">Total Customers</h3>
+                            <p style="font-size: 2rem; font-weight: 800; color: var(--success-green); margin: 1rem 0;">15,247</p>
+                        </div>
+                        <div class="card text-center">
+                            <div class="card-icon" style="margin: 0 auto; background: linear-gradient(135deg, var(--accent-orange), #d97706);">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h3 class="card-title">New This Month</h3>
+                            <p style="font-size: 2rem; font-weight: 800; color: var(--accent-orange); margin: 1rem 0;">342</p>
+                        </div>
+                        <div class="card text-center">
+                            <div class="card-icon" style="margin: 0 auto; background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h3 class="card-title">Satisfaction Rate</h3>
+                            <p style="font-size: 2rem; font-weight: 800; color: var(--secondary-blue); margin: 1rem 0;">99.2%</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analytics Tab -->
+                <div id="analyticsTab" class="admin-content">
+                    <h4 style="color: var(--text-dark); margin-bottom: 1.5rem;">Business Analytics</h4>
+                    <div class="grid grid-2">
+                        <div class="card">
+                            <h3 class="card-title">Monthly Revenue</h3>
+                            <p style="font-size: 2.5rem; font-weight: 800; color: var(--success-green); margin: 1rem 0;">₹12.5L</p>
+                            <p class="card-description">+15% from last month</p>
+                        </div>
+                        <div class="card">
+                            <h3 class="card-title">Active Shipments</h3>
+                            <p style="font-size: 2.5rem; font-weight: 800; color: var(--secondary-blue); margin: 1rem 0;">127</p>
+                            <p class="card-description">Currently in transit</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Tab -->
+                <div id="settingsTab" class="admin-content">
+                    <h4 style="color: var(--text-dark); margin-bottom: 1.5rem;">System Settings</h4>
+                    
+                    <!-- User Management Section -->
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <h3 class="card-title">
+                            <i class="fas fa-users-cog" style="color: var(--secondary-blue); margin-right: 0.5rem;"></i>
+                            User Management
+                        </h3>
+                        <p class="card-description">Manage admin users, create new accounts, and handle password resets.</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                            <button onclick="showCreateUserModal()" style="background: var(--success-green); color: white; padding: 1rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+                                <i class="fas fa-user-plus"></i>
+                                Create New User
+                            </button>
+                            <button onclick="showChangePasswordModal()" style="background: var(--accent-orange); color: white; padding: 1rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+                                <i class="fas fa-key"></i>
+                                Change Password
+                            </button>
+                            <button onclick="showManageUsersModal()" style="background: var(--secondary-blue); color: white; padding: 1rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+                                <i class="fas fa-users"></i>
+                                Manage Users
+                            </button>
+                        </div>
+                        
+                        <!-- Current User Info -->
+                        <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-top: 1.5rem; border-left: 4px solid var(--secondary-blue);">
+                            <p style="margin: 0; color: var(--text-dark);"><strong>Current User:</strong> <span id="currentUserDisplay">admin</span></p>
+                            <p style="margin: 0.25rem 0 0 0; color: var(--text-gray); font-size: 0.875rem;">Last Login: <span id="lastLoginDisplay">Today, 10:30 AM</span></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Pricing Configuration Section -->
+                    <div class="card">
+                        <h3 class="card-title">
+                            <i class="fas fa-calculator" style="color: var(--accent-orange); margin-right: 0.5rem;"></i>
+                            Pricing Configuration
+                        </h3>
+                        <p class="card-description">Manage base rates, distance multipliers, and service charges for the cost calculator.</p>
+                        <button onclick="configurePricing()" style="background: var(--secondary-blue); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; margin-top: 1rem; cursor: pointer;">
+                            <i class="fas fa-cog"></i>
+                            Configure Pricing
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loadingScreen').classList.add('hide');
+            }, 1500);
+        });
+
+        // Header Scroll Effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            const scrollTop = document.getElementById('scrollTop');
+            
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+                scrollTop.classList.add('visible');
+            } else {
+                header.classList.remove('scrolled');
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('active');
+        }
+
+        // Close Mobile Menu (Fixed function)
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.remove('active');
+        }
+
+        // Smooth Scrolling for Navigation Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Close mobile menu if open
+                    closeMobileMenu();
+                    
+                    // Update active nav link
+                    updateActiveNavLink(this.getAttribute('href'));
+                }
+            });
+        });
+
+        // Additional event listeners for mobile menu links
+        document.querySelectorAll('.mobile-nav-links .nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                closeMobileMenu();
+            });
+        });
+
+        // Update Active Navigation Link
+        function updateActiveNavLink(targetId) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelectorAll(`a[href="${targetId}"]`).forEach(link => {
+                link.classList.add('active');
+            });
+        }
+
+        // Scroll to Top Function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Cost Calculator
+        document.getElementById('calculatorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fromCity = document.getElementById('fromCity').value;
+            const toCity = document.getElementById('toCity').value;
+            const serviceType = document.getElementById('serviceType').value;
+            const homeSize = document.getElementById('homeSize').value;
+            const distance = parseInt(document.getElementById('distance').value);
+            
+            // Base rates
+            const baseRates = {
+                '1bhk': 8000,
+                '2bhk': 12000,
+                '3bhk': 18000,
+                '4bhk': 25000,
+                'villa': 35000
+            };
+            
+            const serviceMultipliers = {
+                'household': 1.0,
+                'office': 1.2,
+                'vehicle': 0.8,
+                'storage': 1.1
+            };
+            
+            let baseRate = baseRates[homeSize] || 15000;
+            let serviceMultiplier = serviceMultipliers[serviceType] || 1.0;
+            let distanceRate = distance * 15; // ₹15 per km
+            
+            let totalCost = (baseRate + distanceRate) * serviceMultiplier;
+            
+            // Add additional services
+            if (document.getElementById('packing').checked) totalCost += 2000;
+            if (document.getElementById('insurance').checked) totalCost += 1500;
+            if (document.getElementById('unpacking').checked) totalCost += 1000;
+            if (document.getElementById('storage').checked) totalCost += 3000;
+            
+            // Display result
+            document.getElementById('resultAmount').textContent = `₹${totalCost.toLocaleString()}`;
+            document.getElementById('calculatorResult').style.display = 'block';
+            
+            // Scroll to result
+            document.getElementById('calculatorResult').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Request Quote from Calculator
+        function requestQuote() {
+            const fromCity = document.getElementById('fromCity').value;
+            const toCity = document.getElementById('toCity').value;
+            const serviceType = document.getElementById('serviceType').value;
+            const homeSize = document.getElementById('homeSize').value;
+            const distance = document.getElementById('distance').value;
+            const resultAmount = document.getElementById('resultAmount').textContent;
+            
+            const message = `*Quote Request from Cost Calculator*
+
+*Moving Details:*
+From: ${fromCity}
+To: ${toCity}
+Service: ${serviceType}
+Home Size: ${homeSize}
+Distance: ${distance} km
+
+*Estimated Cost:* ${resultAmount}
+
+*Additional Services:*
+${document.getElementById('packing').checked ? '✓ Professional Packing\n' : ''}${document.getElementById('insurance').checked ? '✓ Insurance Coverage\n' : ''}${document.getElementById('unpacking').checked ? '✓ Unpacking Service\n' : ''}${document.getElementById('storage').checked ? '✓ Temporary Storage\n' : ''}
+
+Please provide detailed quote with live tracking included.
+
+*Timestamp:* ${new Date().toLocaleString()}`;
+
+            window.open(`https://wa.me/919338888559?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // Shipment Tracking
+        function trackShipment() {
+            const trackingId = document.getElementById('trackingId').value.toUpperCase();
+            
+            if (!trackingId) {
+                alert('Please enter a tracking ID');
+                return;
+            }
+            
+            // Check if shipment data exists from admin updates
+            let data = null;
+            if (window.shipmentData && window.shipmentData[trackingId]) {
+                data = window.shipmentData[trackingId];
+                // Ensure proper structure for admin-created shipments
+                if (!data.from) data.from = data.fromCity || 'Origin Location';
+                if (!data.to) data.to = data.toCity || 'Destination Location';
+                if (!data.eta) {
+                    // Calculate ETA based on status and delivery date
+                    if (data.status === 'Delivered') {
+                        data.eta = 'Delivered Successfully';
+                    } else if (data.deliveryDate) {
+                        // Use the delivery date set by admin - just show the date
+                        data.eta = new Date(data.deliveryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    } else if (data.status === 'Out for Delivery') {
+                        data.eta = 'Today by 6:00 PM';
+                    } else if (data.status === 'In Transit') {
+                        const tomorrow = new Date();
+                        tomorrow.setDate(tomorrow.getDate() + 1);
+                        data.eta = tomorrow.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    } else {
+                        data.eta = 'Will be updated soon';
+                    }
+                }
+            } else {
+                // Default tracking data with comprehensive timelines
+                const trackingData = {
+                    'ATZ2024001': {
+                        status: 'In Transit',
+                        statusClass: 'status-in-transit',
+                        icon: 'fas fa-truck',
+                        description: 'Your shipment is on the way to destination',
+                        from: 'Cuttack, Odisha',
+                        to: 'Bhubaneswar, Odisha',
+                        service: 'Household Shifting',
+                        eta: 'Dec 15, 2024',
+                        customerName: 'Rajesh Kumar',
+                        phone: '+91 9876543210',
+                        pickupDate: '2024-12-15',
+                        deliveryDate: '2024-12-15',
+                        estimatedDistance: '28 KM',
+                        vehicleNumber: 'OD-05-AB-1234',
+                        driverName: 'Suresh Kumar',
+                        driverPhone: '+91 9876543211',
+                        statusHistory: [
+                            {
+                                status: 'In Transit',
+                                timestamp: 'Today, 2:30 PM',
+                                location: 'Near Khurda, Odisha',
+                                description: 'Shipment is in transit to destination city'
+                            },
+                            {
+                                status: 'Destination In - Bhubaneswar Hub',
+                                timestamp: 'Today, 10:15 AM',
+                                location: 'Bhubaneswar Distribution Center',
+                                description: 'Shipment has reached the destination city hub'
+                            },
+                            {
+                                status: 'In Transit',
+                                timestamp: 'Yesterday, 6:45 PM',
+                                location: 'Highway NH-16',
+                                description: 'Shipment departed from origin hub'
+                            },
+                            {
+                                status: 'Picked Up',
+                                timestamp: 'Yesterday, 9:00 AM',
+                                location: 'Cuttack, Odisha',
+                                description: 'Shipment has been picked up from origin location'
+                            },
+                            {
+                                status: 'Booking',
+                                timestamp: 'Dec 14, 2024, 3:00 PM',
+                                location: 'Cuttack Office',
+                                description: 'Shipment booking confirmed and scheduled'
+                            }
+                        ]
+                    },
+                    'ATZ2024002': {
+                        status: 'Delivered',
+                        statusClass: 'status-delivered',
+                        icon: 'fas fa-check-circle',
+                        description: 'Your shipment has been successfully delivered',
+                        from: 'Rourkela, Odisha',
+                        to: 'Delhi, India',
+                        service: 'Office Relocation',
+                        eta: 'Delivered Successfully',
+                        customerName: 'Priya Sharma',
+                        phone: '+91 9123456789',
+                        pickupDate: '2024-12-11',
+                        deliveryDate: '2024-12-14',
+                        estimatedDistance: '1,450 KM',
+                        vehicleNumber: 'OD-02-CD-5678',
+                        driverName: 'Ramesh Patel',
+                        driverPhone: '+91 9123456788',
+                        statusHistory: [
+                            {
+                                status: 'Delivered',
+                                timestamp: 'Dec 14, 2024, 4:30 PM',
+                                location: 'Delhi Office Complex',
+                                description: 'Shipment successfully delivered and received by customer'
+                            },
+                            {
+                                status: 'Out for Delivery',
+                                timestamp: 'Dec 14, 2024, 9:00 AM',
+                                location: 'Delhi Distribution Center',
+                                description: 'Shipment out for final delivery'
+                            },
+                            {
+                                status: 'Destination Out - Delhi Hub',
+                                timestamp: 'Dec 14, 2024, 6:00 AM',
+                                location: 'Delhi Distribution Center',
+                                description: 'Shipment departed from destination hub for delivery'
+                            },
+                            {
+                                status: 'Destination In - Delhi Hub',
+                                timestamp: 'Dec 13, 2024, 8:00 PM',
+                                location: 'Delhi Distribution Center',
+                                description: 'Shipment arrived at destination city hub'
+                            },
+                            {
+                                status: 'In Transit',
+                                timestamp: 'Dec 12, 2024, 10:00 AM',
+                                location: 'Highway NH-6',
+                                description: 'Long distance transit in progress'
+                            },
+                            {
+                                status: 'Picked Up',
+                                timestamp: 'Dec 11, 2024, 2:00 PM',
+                                location: 'Rourkela Office',
+                                description: 'Office equipment picked up and loaded'
+                            }
+                        ]
+                    },
+                    'ATZ2024003': {
+                        status: 'Booking',
+                        statusClass: 'status-in-transit',
+                        icon: 'fas fa-calendar-check',
+                        description: 'Shipment is scheduled for pickup',
+                        from: 'Berhampur, Odisha',
+                        to: 'Mumbai, India',
+                        service: 'Vehicle Transport',
+                        eta: 'Dec 20, 2024',
+                        customerName: 'Amit Patel',
+                        phone: '+91 9988776655',
+                        pickupDate: '2024-12-17',
+                        deliveryDate: '2024-12-20',
+                        estimatedDistance: '1,200 KM',
+                        vehicleNumber: 'To be assigned',
+                        driverName: 'To be assigned',
+                        driverPhone: 'Will be shared before pickup',
+                        statusHistory: [
+                            {
+                                status: 'Booking',
+                                timestamp: 'Dec 16, 2024, 11:00 AM',
+                                location: 'Berhampur Office',
+                                description: 'Vehicle transport booking confirmed. Expected delivery: Dec 20, 2024.'
+                            }
+                        ]
+                    }
+                };
+                data = trackingData[trackingId];
+            }
+            
+            if (data) {
+                // Update main status display
+                document.getElementById('displayTrackingId').textContent = trackingId;
+                document.getElementById('statusIcon').className = `status-icon ${data.statusClass}`;
+                document.getElementById('statusIcon').innerHTML = `<i class="${data.icon}"></i>`;
+                document.getElementById('statusTitle').textContent = data.status;
+                document.getElementById('statusDescription').textContent = data.description;
+                document.getElementById('trackingFrom').textContent = data.from;
+                document.getElementById('trackingTo').textContent = data.to;
+                document.getElementById('trackingService').textContent = data.service;
+                document.getElementById('trackingETA').textContent = data.eta;
+                
+                // Update additional tracking information
+                updateTrackingDetails(data);
+                
+                // Update timeline with actual status history
+                updateTrackingTimeline(data.statusHistory || []);
+                
+                document.getElementById('trackingResult').style.display = 'block';
+                document.getElementById('trackingResult').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('❌ Tracking ID not found!\n\nPlease check your tracking ID and try again.\n\nValid format: ATZ2024XXX\n\nFor help, contact: +91 9338888559');
+            }
+        }
+        
+        // Function to update additional tracking details
+        function updateTrackingDetails(data) {
+            // Update additional tracking information if elements exist
+            const distanceEl = document.getElementById('trackingDistance');
+            const vehicleEl = document.getElementById('trackingVehicle');
+            const driverEl = document.getElementById('trackingDriver');
+            const driverPhoneEl = document.getElementById('trackingDriverPhone');
+            
+            if (distanceEl) distanceEl.textContent = data.estimatedDistance || 'Calculating...';
+            if (vehicleEl) vehicleEl.textContent = data.vehicleNumber || 'To be assigned';
+            if (driverEl) driverEl.textContent = data.driverName || 'To be assigned';
+            if (driverPhoneEl) {
+                driverPhoneEl.textContent = data.driverPhone || 'Will be shared';
+                driverPhoneEl.href = data.driverPhone && data.driverPhone !== 'Will be shared before pickup' ? `tel:${data.driverPhone}` : '#';
+            }
+        }
+
+        // Function to update tracking timeline
+        function updateTrackingTimeline(statusHistory) {
+            const timeline = document.querySelector('.tracking-timeline');
+            timeline.innerHTML = '';
+            
+            statusHistory.forEach((item, index) => {
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'timeline-item';
+                
+                // Add different colors for different status types
+                let dotColor = '#3b82f6'; // default blue
+                if (item.status.includes('Delivered')) dotColor = '#10b981'; // green
+                else if (item.status.includes('Picked Up')) dotColor = '#f59e0b'; // orange
+                else if (item.status.includes('Destination')) dotColor = '#8b5cf6'; // purple
+                else if (item.status.includes('Booking')) dotColor = '#ef4444'; // red
+                else if (item.status.includes('Out for Delivery')) dotColor = '#06b6d4'; // cyan
+                
+                timelineItem.innerHTML = `
+                    <div class="timeline-dot" style="background: ${dotColor};"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">${item.timestamp}</div>
+                        <div class="timeline-title">${item.status}</div>
+                        <div class="timeline-description">${item.description}</div>
+                        ${item.location ? `<div style="font-size: 0.75rem; color: var(--text-gray); margin-top: 0.25rem;"><i class="fas fa-map-marker-alt"></i> ${item.location}</div>` : ''}
+                    </div>
+                `;
+                
+                timeline.appendChild(timelineItem);
+            });
+        }
+
+        // Admin Modal Functions
+        function showAdminModal() {
+            document.getElementById('adminModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            adminLogout();
+        }
+
+        // Initialize admin users storage
+        if (!localStorage.getItem('adminUsers')) {
+            const defaultUsers = {
+                'admin': {
+                    password: 'admin123',
+                    role: 'Super Admin',
+                    email: 'admin@atozpackers.com',
+                    createdDate: '2024-01-01',
+                    lastLogin: new Date().toLocaleString(),
+                    isActive: true
+                }
+            };
+            localStorage.setItem('adminUsers', JSON.stringify(defaultUsers));
+        }
+
+        // Current logged in user
+        let currentUser = null;
+
+        // Admin Panel Functions
+        function adminLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            // Get users from localStorage
+            const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+            
+            if (users[username] && users[username].password === password && users[username].isActive) {
+                // Update last login
+                users[username].lastLogin = new Date().toLocaleString();
+                localStorage.setItem('adminUsers', JSON.stringify(users));
+                
+                currentUser = username;
+                document.getElementById('currentUserDisplay').textContent = username;
+                document.getElementById('lastLoginDisplay').textContent = users[username].lastLogin;
+                
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+            } else {
+                alert('❌ Invalid credentials or account disabled!\n\nPlease check your username and password.\n\nFor demo: admin / admin123');
+            }
+        }
+
+        function adminLogout() {
+            currentUser = null;
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // User Management Functions
+        function showCreateUserModal() {
+            const modalHTML = `
+                <div id="createUserModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2001; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--text-dark); text-align: center;">
+                            <i class="fas fa-user-plus" style="color: var(--success-green); margin-right: 0.5rem;"></i>
+                            Create New Admin User
+                        </h3>
+                        
+                        <form id="createUserForm">
+                            <div class="form-group">
+                                <label class="form-label">Username *</label>
+                                <input type="text" id="newUsername" required class="form-input" placeholder="Enter username" pattern="[a-zA-Z0-9_]+" title="Only letters, numbers, and underscores allowed">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" id="newUserEmail" required class="form-input" placeholder="admin@atozpackers.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Password *</label>
+                                <input type="password" id="newUserPassword" required class="form-input" placeholder="Enter secure password" minlength="6">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Confirm Password *</label>
+                                <input type="password" id="confirmUserPassword" required class="form-input" placeholder="Confirm password">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Role *</label>
+                                <select id="newUserRole" required class="form-input">
+                                    <option value="">Select Role</option>
+                                    <option value="Super Admin">Super Admin</option>
+                                    <option value="Admin">Admin</option>
+                                    <option value="Manager">Manager</option>
+                                    <option value="Operator">Operator</option>
+                                </select>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" style="flex: 1; background: var(--success-green); color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-user-plus"></i> Create User
+                                </button>
+                                <button type="button" onclick="closeCreateUserModal()" style="flex: 1; background: #ef4444; color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            document.getElementById('createUserForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('newUsername').value;
+                const email = document.getElementById('newUserEmail').value;
+                const password = document.getElementById('newUserPassword').value;
+                const confirmPassword = document.getElementById('confirmUserPassword').value;
+                const role = document.getElementById('newUserRole').value;
+                
+                // Validation
+                if (password !== confirmPassword) {
+                    alert('❌ Passwords do not match!');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    alert('❌ Password must be at least 6 characters long!');
+                    return;
+                }
+                
+                // Check if username already exists
+                const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+                if (users[username]) {
+                    alert('❌ Username already exists! Please choose a different username.');
+                    return;
+                }
+                
+                // Create new user
+                users[username] = {
+                    password: password,
+                    role: role,
+                    email: email,
+                    createdDate: new Date().toLocaleDateString(),
+                    lastLogin: 'Never',
+                    isActive: true,
+                    createdBy: currentUser
+                };
+                
+                localStorage.setItem('adminUsers', JSON.stringify(users));
+                closeCreateUserModal();
+                
+                alert(`✅ User created successfully!
+
+Username: ${username}
+Email: ${email}
+Role: ${role}
+Status: Active
+
+The user can now login with their credentials.`);
+            });
+        }
+        
+        function closeCreateUserModal() {
+            const modal = document.getElementById('createUserModal');
+            if (modal) modal.remove();
+        }
+
+        function showChangePasswordModal() {
+            const modalHTML = `
+                <div id="changePasswordModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2001; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 450px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--text-dark); text-align: center;">
+                            <i class="fas fa-key" style="color: var(--accent-orange); margin-right: 0.5rem;"></i>
+                            Change Password
+                        </h3>
+                        
+                        <div style="background: var(--bg-light); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center;">
+                            <p style="margin: 0; color: var(--text-dark);"><strong>Current User:</strong> ${currentUser}</p>
+                        </div>
+                        
+                        <form id="changePasswordForm">
+                            <div class="form-group">
+                                <label class="form-label">Current Password *</label>
+                                <input type="password" id="currentPassword" required class="form-input" placeholder="Enter current password">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">New Password *</label>
+                                <input type="password" id="newPassword" required class="form-input" placeholder="Enter new password" minlength="6">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Confirm New Password *</label>
+                                <input type="password" id="confirmNewPassword" required class="form-input" placeholder="Confirm new password">
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" style="flex: 1; background: var(--accent-orange); color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-key"></i> Change Password
+                                </button>
+                                <button type="button" onclick="closeChangePasswordModal()" style="flex: 1; background: #ef4444; color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+                
+                const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+                
+                // Verify current password
+                if (users[currentUser].password !== currentPassword) {
+                    alert('❌ Current password is incorrect!');
+                    return;
+                }
+                
+                // Validate new password
+                if (newPassword !== confirmNewPassword) {
+                    alert('❌ New passwords do not match!');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    alert('❌ New password must be at least 6 characters long!');
+                    return;
+                }
+                
+                if (newPassword === currentPassword) {
+                    alert('❌ New password must be different from current password!');
+                    return;
+                }
+                
+                // Update password
+                users[currentUser].password = newPassword;
+                localStorage.setItem('adminUsers', JSON.stringify(users));
+                
+                closeChangePasswordModal();
+                alert('✅ Password changed successfully!\n\nYour new password is now active.');
+            });
+        }
+        
+        function closeChangePasswordModal() {
+            const modal = document.getElementById('changePasswordModal');
+            if (modal) modal.remove();
+        }
+
+        function showManageUsersModal() {
+            const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+            
+            let userRows = '';
+            Object.keys(users).forEach(username => {
+                const user = users[username];
+                const statusBadge = user.isActive ? 
+                    '<span class="status-badge status-completed">Active</span>' : 
+                    '<span class="status-badge status-pending">Disabled</span>';
+                
+                userRows += `
+                    <tr>
+                        <td><strong>${username}</strong></td>
+                        <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td>${user.createdDate}</td>
+                        <td>${user.lastLogin}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                ${user.isActive ? 
+                                    `<button onclick="toggleUserStatus('${username}', false)" style="background: #ef4444; color: white; padding: 0.5rem 0.75rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                                        <i class="fas fa-ban"></i> Disable
+                                    </button>` :
+                                    `<button onclick="toggleUserStatus('${username}', true)" style="background: var(--success-green); color: white; padding: 0.5rem 0.75rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                                        <i class="fas fa-check"></i> Enable
+                                    </button>`
+                                }
+                                ${username !== 'admin' ? 
+                                    `<button onclick="resetUserPassword('${username}')" style="background: var(--accent-orange); color: white; padding: 0.5rem 0.75rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                                        <i class="fas fa-key"></i> Reset
+                                    </button>` : ''
+                                }
+                                ${username !== 'admin' && username !== currentUser ? 
+                                    `<button onclick="deleteUser('${username}')" style="background: #dc2626; color: white; padding: 0.5rem 0.75rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>` : ''
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            const modalHTML = `
+                <div id="manageUsersModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2001; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 1200px; width: 95%; max-height: 90vh; overflow-y: auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 style="color: var(--text-dark); margin: 0;">
+                                <i class="fas fa-users" style="color: var(--secondary-blue); margin-right: 0.5rem;"></i>
+                                Manage Admin Users
+                            </h3>
+                            <button onclick="closeManageUsersModal()" style="background: #ef4444; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.25rem;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div style="overflow-x: auto;">
+                            <table class="shipment-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Created</th>
+                                        <th>Last Login</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${userRows}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                            <p style="margin: 0; color: var(--text-gray); font-size: 0.875rem;">
+                                <i class="fas fa-info-circle" style="color: var(--secondary-blue); margin-right: 0.5rem;"></i>
+                                <strong>Note:</strong> The default 'admin' user cannot be deleted. Users can only delete other users, not themselves.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+        
+        function closeManageUsersModal() {
+            const modal = document.getElementById('manageUsersModal');
+            if (modal) modal.remove();
+        }
+
+        function toggleUserStatus(username, status) {
+            const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+            users[username].isActive = status;
+            localStorage.setItem('adminUsers', JSON.stringify(users));
+            
+            closeManageUsersModal();
+            showManageUsersModal(); // Refresh the modal
+            
+            alert(`✅ User '${username}' has been ${status ? 'enabled' : 'disabled'} successfully!`);
+        }
+
+        function resetUserPassword(username) {
+            const newPassword = prompt(`Reset password for user: ${username}\n\nEnter new password (minimum 6 characters):`);
+            
+            if (!newPassword) return;
+            
+            if (newPassword.length < 6) {
+                alert('❌ Password must be at least 6 characters long!');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+            users[username].password = newPassword;
+            localStorage.setItem('adminUsers', JSON.stringify(users));
+            
+            alert(`✅ Password reset successfully for user '${username}'!\n\nNew password: ${newPassword}\n\nPlease share this with the user securely.`);
+        }
+
+        function deleteUser(username) {
+            const confirmDelete = confirm(`⚠️ Delete User Confirmation\n\nAre you sure you want to permanently delete user '${username}'?\n\nThis action cannot be undone!\n\nClick OK to delete or Cancel to abort.`);
+            
+            if (!confirmDelete) return;
+            
+            const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+            delete users[username];
+            localStorage.setItem('adminUsers', JSON.stringify(users));
+            
+            closeManageUsersModal();
+            showManageUsersModal(); // Refresh the modal
+            
+            alert(`✅ User '${username}' has been deleted successfully!`);
+        }
+
+        function showForgotPasswordModal() {
+            const modalHTML = `
+                <div id="forgotPasswordModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2001; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--text-dark); text-align: center;">
+                            <i class="fas fa-question-circle" style="color: var(--secondary-blue); margin-right: 0.5rem;"></i>
+                            Password Recovery
+                        </h3>
+                        
+                        <div style="background: #dbeafe; border: 1px solid var(--secondary-blue); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                            <h4 style="color: var(--primary-blue); margin-bottom: 1rem;">
+                                <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>
+                                Password Recovery Options
+                            </h4>
+                            <ul style="color: var(--text-dark); margin: 0; padding-left: 1.5rem;">
+                                <li style="margin-bottom: 0.5rem;">Contact the Super Admin to reset your password</li>
+                                <li style="margin-bottom: 0.5rem;">Call support: <strong>+91 9338888550</strong></li>
+                                <li style="margin-bottom: 0.5rem;">Email: <strong>admin@atozpackers.com</strong></li>
+                                <li>WhatsApp support for immediate assistance</li>
+                            </ul>
+                        </div>
+                        
+                        <form id="forgotPasswordForm">
+                            <div class="form-group">
+                                <label class="form-label">Your Username *</label>
+                                <input type="text" id="forgotUsername" required class="form-input" placeholder="Enter your username">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Registered Email *</label>
+                                <input type="email" id="forgotEmail" required class="form-input" placeholder="Enter your registered email">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Reason for Password Reset</label>
+                                <textarea id="forgotReason" class="form-input" rows="3" placeholder="Briefly explain why you need password reset..."></textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" style="flex: 1; background: var(--secondary-blue); color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-paper-plane"></i> Send Recovery Request
+                                </button>
+                                <button type="button" onclick="closeForgotPasswordModal()" style="flex: 1; background: #ef4444; color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div style="text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                            <p style="color: var(--text-gray); font-size: 0.875rem; margin-bottom: 1rem;">Need immediate help?</p>
+                            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                                <a href="tel:+919338888550" style="background: var(--success-green); color: white; padding: 0.75rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                                    <i class="fas fa-phone"></i> Call Support
+                                </a>
+                                <a href="https://wa.me/919338888550" style="background: #25d366; color: white; padding: 0.75rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('forgotUsername').value;
+                const email = document.getElementById('forgotEmail').value;
+                const reason = document.getElementById('forgotReason').value;
+                
+                // Check if user exists
+                const users = JSON.parse(localStorage.getItem('adminUsers') || '{}');
+                if (!users[username]) {
+                    alert('❌ Username not found in our system!');
+                    return;
+                }
+                
+                if (users[username].email !== email) {
+                    alert('❌ Email does not match our records for this username!');
+                    return;
+                }
+                
+                // Create recovery request message
+                const message = `🔐 *Password Recovery Request*
+
+*Username:* ${username}
+*Email:* ${email}
+*Request Time:* ${new Date().toLocaleString()}
+
+*Reason:* ${reason || 'Not specified'}
+
+*User Details:*
+- Role: ${users[username].role}
+- Account Status: ${users[username].isActive ? 'Active' : 'Disabled'}
+- Last Login: ${users[username].lastLogin}
+
+Please reset the password for this user account.
+
+*A to Z Packers & Movers - Admin System*`;
+
+                // Open WhatsApp with recovery request
+                window.open(`https://wa.me/919338888550?text=${encodeURIComponent(message)}`, '_blank');
+                
+                closeForgotPasswordModal();
+                alert('✅ Password recovery request sent!\n\nYour request has been forwarded to the support team via WhatsApp.\n\nYou will receive your new password within 24 hours.\n\nFor urgent requests, please call +91 9338888550');
+            });
+        }
+        
+        function closeForgotPasswordModal() {
+            const modal = document.getElementById('forgotPasswordModal');
+            if (modal) modal.remove();
+        }
+
+        function showAdminTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.admin-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Shipment counter for generating new IDs
+        let shipmentCounter = 4;
+
+        function addNewShipment() {
+            // Create a modal form for better user experience
+            const modalHTML = `
+                <div id="addShipmentModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--text-dark); text-align: center;">
+                            <i class="fas fa-plus-circle" style="color: var(--success-green); margin-right: 0.5rem;"></i>
+                            Add New Shipment
+                        </h3>
+                        <form id="addShipmentForm">
+                            <div class="form-group">
+                                <label class="form-label">Customer Name *</label>
+                                <input type="text" id="newCustomerName" required class="form-input" placeholder="Enter customer name">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">From City *</label>
+                                    <input type="text" id="newFromCity" required class="form-input" placeholder="Origin city">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">To City *</label>
+                                    <input type="text" id="newToCity" required class="form-input" placeholder="Destination city">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Service Type *</label>
+                                <select id="newServiceType" required class="form-input">
+                                    <option value="">Select Service</option>
+                                    <option value="Household">Household Shifting</option>
+                                    <option value="Office">Office Relocation</option>
+                                    <option value="Vehicle">Vehicle Transport</option>
+                                    <option value="Storage">Storage Solutions</option>
+                                </select>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" id="newPhone" required class="form-input" placeholder="+91 9876543210">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Pickup Date</label>
+                                    <input type="date" id="newPickupDate" class="form-input">
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Expected Delivery Date *</label>
+                                    <input type="date" id="newDeliveryDate" required class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Estimated Distance (KM) *</label>
+                                    <input type="number" id="newDistance" required class="form-input" placeholder="e.g., 150" min="1">
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Vehicle Number</label>
+                                    <input type="text" id="newVehicleNumber" class="form-input" placeholder="e.g., OD-05-AB-1234" style="text-transform: uppercase;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Driver Name</label>
+                                    <input type="text" id="newDriverName" class="form-input" placeholder="Enter driver name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Driver Contact Number</label>
+                                <input type="tel" id="newDriverPhone" class="form-input" placeholder="+91 9876543210">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Special Instructions</label>
+                                <textarea id="newInstructions" class="form-input" rows="3" placeholder="Any special handling requirements..."></textarea>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" style="flex: 1; background: var(--success-green); color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-plus"></i> Create Shipment
+                                </button>
+                                <button type="button" onclick="closeAddShipmentModal()" style="flex: 1; background: #ef4444; color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.body.style.overflow = 'hidden';
+            
+            // Handle form submission
+            document.getElementById('addShipmentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const customerName = document.getElementById('newCustomerName').value;
+                const fromCity = document.getElementById('newFromCity').value;
+                const toCity = document.getElementById('newToCity').value;
+                const serviceType = document.getElementById('newServiceType').value;
+                const phone = document.getElementById('newPhone').value;
+                const pickupDate = document.getElementById('newPickupDate').value;
+                const deliveryDate = document.getElementById('newDeliveryDate').value;
+                const distance = document.getElementById('newDistance').value;
+                const vehicleNumber = document.getElementById('newVehicleNumber').value;
+                const driverName = document.getElementById('newDriverName').value;
+                const driverPhone = document.getElementById('newDriverPhone').value;
+                const instructions = document.getElementById('newInstructions').value;
+                
+                // Generate new tracking ID
+                const trackingId = `ATZ2024${String(shipmentCounter).padStart(3, '0')}`;
+                shipmentCounter++;
+                
+                // Create new row
+                const tableBody = document.getElementById('shipmentsTableBody');
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td><strong>${trackingId}</strong></td>
+                    <td>${customerName}<br><small style="color: var(--text-gray);">${phone}</small></td>
+                    <td>${fromCity} → ${toCity}</td>
+                    <td>${serviceType}</td>
+                    <td><span class="status-badge status-pending">Booking</span></td>
+                    <td>${pickupDate || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td>
+                        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                            <button onclick="editShipmentStatus('${trackingId}')" style="background: var(--secondary-blue); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3); min-width: 80px;" title="Update Status">
+                                <i class="fas fa-edit" style="font-size: 1.1rem;"></i>
+                                <span>EDIT</span>
+                            </button>
+                            <button onclick="viewShipment('${trackingId}')" style="background: var(--success-green); color: white; padding: 0.75rem 1rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3); min-width: 80px;" title="View Details">
+                                <i class="fas fa-eye" style="font-size: 1.1rem;"></i>
+                                <span>VIEW</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                tableBody.insertBefore(newRow, tableBody.firstChild);
+                
+                // Store shipment data for tracking
+                if (!window.shipmentData) window.shipmentData = {};
+                window.shipmentData[trackingId] = {
+                    customerName,
+                    phone,
+                    email: 'customer@email.com',
+                    fromCity,
+                    toCity,
+                    from: fromCity, // For tracking display
+                    to: toCity, // For tracking display
+                    service: serviceType,
+                    homeSize: 'Standard',
+                    pickupDate,
+                    deliveryDate,
+                    estimatedCost: '₹15,000',
+                    status: 'Booking',
+                    statusClass: 'status-pending',
+                    icon: 'fas fa-calendar-check',
+                    description: 'Shipment is scheduled for pickup',
+                    specialInstructions: instructions || 'No special instructions',
+                    insurance: 'Yes - ₹2,00,000 coverage',
+                    currentLocation: fromCity,
+                    estimatedDelivery: deliveryDate || 'To be confirmed',
+                    eta: deliveryDate ? new Date(deliveryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'To be confirmed',
+                    estimatedDistance: distance ? `${distance} KM` : 'Calculating...',
+                    vehicleNumber: vehicleNumber || 'To be assigned',
+                    driverName: driverName || 'To be assigned',
+                    driverPhone: driverPhone || 'Will be shared before pickup',
+                    statusHistory: [{
+                        status: 'Booking',
+                        timestamp: new Date().toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                        }),
+                        location: `${fromCity} Office`,
+                        description: 'Shipment booking confirmed and scheduled for pickup'
+                    }]
+                };
+                
+                closeAddShipmentModal();
+                alert(`✅ New shipment ${trackingId} created successfully!\n\nCustomer: ${customerName}\nRoute: ${fromCity} → ${toCity}\nService: ${serviceType}\nStatus: Booking`);
+            });
+        }
+        
+        function closeAddShipmentModal() {
+            const modal = document.getElementById('addShipmentModal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function editShipmentStatus(trackingId) {
+            // Create status update modal
+            const modalHTML = `
+                <div id="statusUpdateModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--text-dark); text-align: center;">
+                            <i class="fas fa-edit" style="color: var(--secondary-blue); margin-right: 0.5rem;"></i>
+                            Update Status - ${trackingId}
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                            <button onclick="updateStatus('${trackingId}', 'Booking', 'status-pending')" class="status-btn" style="padding: 1rem; border: 2px solid #fbbf24; background: #fef3c7; color: #92400e; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-calendar-check" style="margin-right: 0.5rem;"></i>
+                                Booking
+                            </button>
+                            
+                            <button onclick="updateStatus('${trackingId}', 'Picked Up', 'status-in-progress')" class="status-btn" style="padding: 1rem; border: 2px solid #3b82f6; background: #dbeafe; color: #1e40af; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-hand-paper" style="margin-right: 0.5rem;"></i>
+                                Picked Up
+                            </button>
+                            
+                            <button onclick="updateStatus('${trackingId}', 'In Transit', 'status-in-progress')" class="status-btn" style="padding: 1rem; border: 2px solid #3b82f6; background: #dbeafe; color: #1e40af; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-truck" style="margin-right: 0.5rem;"></i>
+                                In Transit
+                            </button>
+                            
+                            <button onclick="showCustomDestinationModal('${trackingId}', 'in')" class="status-btn" style="padding: 1rem; border: 2px solid #8b5cf6; background: #ede9fe; color: #7c3aed; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i>
+                                Destination In
+                            </button>
+                            
+                            <button onclick="showCustomDestinationModal('${trackingId}', 'out')" class="status-btn" style="padding: 1rem; border: 2px solid #8b5cf6; background: #ede9fe; color: #7c3aed; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
+                                Destination Out
+                            </button>
+                            
+                            <button onclick="updateStatus('${trackingId}', 'Out for Delivery', 'status-in-progress')" class="status-btn" style="padding: 1rem; border: 2px solid #f59e0b; background: #fef3c7; color: #d97706; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-shipping-fast" style="margin-right: 0.5rem;"></i>
+                                Out for Delivery
+                            </button>
+                            
+                            <button onclick="updateStatus('${trackingId}', 'Delivered', 'status-completed')" class="status-btn" style="padding: 1rem; border: 2px solid #10b981; background: #d1fae5; color: #065f46; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                Delivered
+                            </button>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <button onclick="closeStatusModal()" style="background: #ef4444; color: white; padding: 0.75rem 2rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.body.style.overflow = 'hidden';
+            
+            // Add hover effects
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        }
+        
+        function showCustomDestinationModal(trackingId, type) {
+            closeStatusModal();
+            
+            const title = type === 'in' ? 'Destination In' : 'Destination Out';
+            const placeholder = type === 'in' ? 'Enter destination hub/city name' : 'Enter departure location from destination';
+            
+            const modalHTML = `
+                <div id="customDestinationModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--text-dark); text-align: center;">
+                            <i class="fas fa-map-marker-alt" style="color: #8b5cf6; margin-right: 0.5rem;"></i>
+                            ${title} - ${trackingId}
+                        </h3>
+                        
+                        <form id="customDestinationForm">
+                            <div class="form-group">
+                                <label class="form-label">Location Details *</label>
+                                <input type="text" id="customLocation" required class="form-input" placeholder="${placeholder}">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Additional Notes</label>
+                                <textarea id="customNotes" class="form-input" rows="3" placeholder="Any additional information about this status update..."></textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" style="flex: 1; background: #8b5cf6; color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-check"></i> Update Status
+                                </button>
+                                <button type="button" onclick="closeCustomDestinationModal()" style="flex: 1; background: #ef4444; color: white; padding: 1rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            document.getElementById('customDestinationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const location = document.getElementById('customLocation').value;
+                const notes = document.getElementById('customNotes').value;
+                
+                const statusText = `${title} - ${location}`;
+                updateStatus(trackingId, statusText, 'status-in-progress', notes);
+                closeCustomDestinationModal();
+            });
+        }
+        
+        function updateStatus(trackingId, statusText, statusClass, notes = '') {
+            // Update the table
+            const rows = document.querySelectorAll('#shipmentsTableBody tr');
+            
+            rows.forEach(row => {
+                const trackingCell = row.querySelector('td strong');
+                if (trackingCell && trackingCell.textContent === trackingId) {
+                    const statusCell = row.querySelector('.status-badge');
+                    statusCell.textContent = statusText;
+                    statusCell.className = `status-badge ${statusClass}`;
+                }
+            });
+            
+            // Initialize shipment data if it doesn't exist
+            if (!window.shipmentData) window.shipmentData = {};
+            if (!window.shipmentData[trackingId]) {
+                // Create default data structure for existing shipments with phone numbers
+                const defaultData = {
+                    'ATZ2024001': {
+                        customerName: 'Rajesh Kumar',
+                        phone: '+919876543210',
+                        fromCity: 'Cuttack, Odisha',
+                        toCity: 'Bhubaneswar, Odisha',
+                        service: 'Household Shifting'
+                    },
+                    'ATZ2024002': {
+                        customerName: 'Priya Sharma',
+                        phone: '+919123456789',
+                        fromCity: 'Rourkela, Odisha',
+                        toCity: 'Delhi, India',
+                        service: 'Office Relocation'
+                    },
+                    'ATZ2024003': {
+                        customerName: 'Amit Patel',
+                        phone: '+919988776655',
+                        fromCity: 'Berhampur, Odisha',
+                        toCity: 'Mumbai, India',
+                        service: 'Vehicle Transport'
+                    }
+                };
+                
+                window.shipmentData[trackingId] = defaultData[trackingId] || {
+                    customerName: 'Customer',
+                    phone: '+919999999999',
+                    fromCity: 'Origin',
+                    toCity: 'Destination',
+                    service: 'Service'
+                };
+            }
+            
+            // Update shipment data with new status
+            const shipment = window.shipmentData[trackingId];
+            shipment.status = statusText;
+            shipment.statusClass = statusClass;
+            
+            // Determine appropriate icon based on status
+            let icon = 'fas fa-info-circle';
+            if (statusText.includes('Delivered')) icon = 'fas fa-check-circle';
+            else if (statusText.includes('Transit')) icon = 'fas fa-truck';
+            else if (statusText.includes('Picked Up')) icon = 'fas fa-hand-paper';
+            else if (statusText.includes('Destination')) icon = 'fas fa-map-marker-alt';
+            else if (statusText.includes('Delivery')) icon = 'fas fa-shipping-fast';
+            else if (statusText.includes('Booking')) icon = 'fas fa-calendar-check';
+            
+            shipment.icon = icon;
+            shipment.description = notes || `Status updated to ${statusText}`;
+            
+            // Initialize status history if it doesn't exist
+            if (!shipment.statusHistory) {
+                shipment.statusHistory = [];
+            }
+            
+            // Add new status to history (at the beginning for chronological order)
+            const newStatusEntry = {
+                status: statusText,
+                timestamp: new Date().toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                }),
+                location: determineLocationFromStatus(statusText, shipment),
+                description: notes || getDefaultDescription(statusText)
+            };
+            
+            shipment.statusHistory.unshift(newStatusEntry);
+            
+            // Send automatic WhatsApp notification to customer
+            sendStatusUpdateToCustomer(trackingId, shipment, statusText, newStatusEntry, notes);
+            
+            closeStatusModal();
+            closeCustomDestinationModal();
+            
+            alert(`✅ Shipment ${trackingId} status updated to: ${statusText}${notes ? '\n\nNotes: ' + notes : ''}\n\n📱 WhatsApp notification sent to customer: ${shipment.phone}\n💡 Customer can track live updates on our website!`);
+        }
+        
+        // Function to send automatic WhatsApp status updates to customers
+        function sendStatusUpdateToCustomer(trackingId, shipment, statusText, statusEntry, notes) {
+            const customerPhone = shipment.phone;
+            const customerName = shipment.customerName;
+            
+            // Generate docket number for booking status
+            let docketNumber = '';
+            if (statusText.includes('Booking')) {
+                docketNumber = `DOC${trackingId.replace('ATZ', '')}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+            }
+            
+            // Create status-specific messages with emojis
+            let statusEmoji = '📦';
+            let statusMessage = '';
+            
+            if (statusText.includes('Delivered')) {
+                statusEmoji = '✅';
+                statusMessage = 'Your shipment has been successfully delivered!';
+            } else if (statusText.includes('Out for Delivery')) {
+                statusEmoji = '🚚';
+                statusMessage = 'Your shipment is out for delivery and will reach you soon!';
+            } else if (statusText.includes('In Transit')) {
+                statusEmoji = '🛣️';
+                statusMessage = 'Your shipment is on the way to destination.';
+            } else if (statusText.includes('Picked Up')) {
+                statusEmoji = '📋';
+                statusMessage = 'Your shipment has been picked up and is now in our care.';
+            } else if (statusText.includes('Destination In')) {
+                statusEmoji = '🏢';
+                statusMessage = 'Your shipment has reached the destination city hub.';
+            } else if (statusText.includes('Destination Out')) {
+                statusEmoji = '🚛';
+                statusMessage = 'Your shipment has departed from destination hub for local delivery.';
+            } else if (statusText.includes('Booking')) {
+                statusEmoji = '📅';
+                statusMessage = 'Your shipment booking has been confirmed and docket number generated.';
+            } else {
+                statusMessage = `Your shipment status has been updated to: ${statusText}`;
+            }
+            
+            // Create comprehensive WhatsApp message
+            const whatsappMessage = `${statusEmoji} *A to Z Packers & Movers - Status Update*
+
+Hello ${customerName}!
+
+*Tracking ID:* ${trackingId}
+${docketNumber ? `*Docket Number:* ${docketNumber}\n` : ''}*New Status:* ${statusText}
+*Time:* ${statusEntry.timestamp}
+*Location:* ${statusEntry.location}
+
+${statusMessage}
+
+*Route:* ${shipment.fromCity} → ${shipment.toCity}
+*Service:* ${shipment.service}
+
+${notes ? `*Additional Notes:* ${notes}\n\n` : ''}${docketNumber ? `📋 *Important:* Please save your docket number ${docketNumber} for future reference and insurance claims.\n\n` : ''}*📍 Live Tracking Available:*
+Visit our website and enter tracking ID: ${trackingId}
+Track real-time location and complete journey timeline.
+
+${statusText.includes('Delivered') ? 
+`🎉 *Thank you for choosing A to Z Packers & Movers!*
+We hope you're satisfied with our service. Please rate us and share your feedback.` : 
+`📞 *Need Help?*
+Call: +91 9338888550
+WhatsApp: Reply to this message`}
+
+*A to Z Packers & Movers*
+_Your Trusted Moving Partner Since 2005_`;
+
+            // Open WhatsApp with pre-filled message
+            const whatsappUrl = `https://wa.me/${customerPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(whatsappMessage)}`;
+            
+            // Show notification to admin with option to send
+            const sendConfirm = confirm(`📱 Send WhatsApp Update to Customer?\n\nCustomer: ${customerName}\nPhone: ${customerPhone}\nStatus: ${statusText}\n\nClick OK to open WhatsApp with pre-filled message, or Cancel to skip notification.`);
+            
+            if (sendConfirm) {
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+        
+        // Helper function to determine location based on status
+        function determineLocationFromStatus(status, shipment) {
+            if (status.includes('Picked Up')) return shipment.fromCity;
+            if (status.includes('Delivered')) return shipment.toCity;
+            if (status.includes('Destination In')) return `${shipment.toCity} Hub`;
+            if (status.includes('Destination Out')) return `${shipment.toCity} Distribution Center`;
+            if (status.includes('Out for Delivery')) return `${shipment.toCity} Local Area`;
+            if (status.includes('In Transit')) return 'Highway Route';
+            if (status.includes('Booking')) return `${shipment.fromCity} Office`;
+            return 'Processing Center';
+        }
+        
+        // Helper function to get default description for status
+        function getDefaultDescription(status) {
+            const descriptions = {
+                'Booking': 'Shipment booking confirmed and scheduled for pickup',
+                'Picked Up': 'Items have been collected from pickup location',
+                'In Transit': 'Shipment is traveling to destination city',
+                'Out for Delivery': 'Shipment is out for final delivery to customer',
+                'Delivered': 'Shipment successfully delivered to customer'
+            };
+            
+            // Check for custom destination statuses
+            if (status.includes('Destination In')) {
+                return 'Shipment has arrived at destination city hub for processing';
+            }
+            if (status.includes('Destination Out')) {
+                return 'Shipment has departed from destination hub for local delivery';
+            }
+            
+            // Return specific description or default
+            return descriptions[status] || `Status updated to ${status}`;
+        }
+        
+        function closeStatusModal() {
+            const modal = document.getElementById('statusUpdateModal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        function closeCustomDestinationModal() {
+            const modal = document.getElementById('customDestinationModal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function viewShipment(trackingId) {
+            // Check if shipment data exists in window.shipmentData first (for newly created shipments)
+            let data = null;
+            
+            if (window.shipmentData && window.shipmentData[trackingId]) {
+                data = window.shipmentData[trackingId];
+            } else {
+                // Default shipment data for existing shipments
+                const defaultShipmentData = {
+                    'ATZ2024001': {
+                        customerName: 'Rajesh Kumar',
+                        phone: '+91 9876543210',
+                        email: 'rajesh.kumar@email.com',
+                        fromCity: 'Cuttack, Odisha',
+                        toCity: 'Bhubaneswar, Odisha',
+                        service: 'Household Shifting',
+                        homeSize: '2 BHK',
+                        pickupDate: '2024-12-15',
+                        estimatedCost: '₹15,000',
+                        status: 'In Transit',
+                        specialInstructions: 'Handle fragile items with care. Piano needs special attention.',
+                        insurance: 'Yes - ₹2,00,000 coverage',
+                        currentLocation: 'Near Khurda, Odisha',
+                        estimatedDelivery: 'Today, 5:00 PM'
+                    },
+                    'ATZ2024002': {
+                        customerName: 'Priya Sharma',
+                        phone: '+91 9123456789',
+                        email: 'priya.sharma@company.com',
+                        fromCity: 'Rourkela, Odisha',
+                        toCity: 'Delhi, India',
+                        service: 'Office Relocation',
+                        homeSize: '50 Workstations',
+                        pickupDate: '2024-12-14',
+                        estimatedCost: '₹85,000',
+                        status: 'Delivered',
+                        specialInstructions: 'IT equipment requires anti-static packaging. Server room items priority.',
+                        insurance: 'Yes - ₹10,00,000 coverage',
+                        currentLocation: 'Delivered at Delhi Office',
+                        estimatedDelivery: 'Delivered on Dec 14, 2024'
+                    },
+                    'ATZ2024003': {
+                        customerName: 'Amit Patel',
+                        phone: '+91 9988776655',
+                        email: 'amit.patel@email.com',
+                        fromCity: 'Berhampur, Odisha',
+                        toCity: 'Mumbai, India',
+                        service: 'Vehicle Transport',
+                        homeSize: 'Honda City (Car)',
+                        pickupDate: '2024-12-17',
+                        estimatedCost: '₹25,000',
+                        status: 'Booking',
+                        specialInstructions: 'Car has minor scratches on left door. Document before pickup.',
+                        insurance: 'Yes - ₹5,00,000 coverage',
+                        currentLocation: 'Scheduled for pickup',
+                        estimatedDelivery: 'Dec 20, 2024'
+                    }
+                };
+                
+                data = defaultShipmentData[trackingId];
+            }
+            
+            if (!data) {
+                alert('Shipment data not found!');
+                return;
+            }
+            
+            // Create detailed view modal
+            const modalHTML = `
+                <div id="viewShipmentModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 1rem;">
+                    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 1rem;">
+                            <h3 style="color: var(--text-dark); margin: 0;">
+                                <i class="fas fa-eye" style="color: var(--success-green); margin-right: 0.5rem;"></i>
+                                Shipment Details - ${trackingId}
+                            </h3>
+                            <button onclick="closeViewModal()" style="background: #ef4444; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.25rem;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Status Banner -->
+                        <div style="background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue)); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.5rem;">Current Status: ${data.status}</h4>
+                            <p style="margin: 0; opacity: 0.9;">${data.currentLocation}</p>
+                            <p style="margin: 0.5rem 0 0 0; font-weight: 600;">ETA: ${data.estimatedDelivery}</p>
+                        </div>
+                        
+                        <!-- Customer Information -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                            <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 12px;">
+                                <h4 style="color: var(--text-dark); margin-bottom: 1rem; display: flex; align-items: center;">
+                                    <i class="fas fa-user" style="color: var(--secondary-blue); margin-right: 0.5rem;"></i>
+                                    Customer Information
+                                </h4>
+                                <div style="space-y: 0.5rem;">
+                                    <p style="margin: 0.5rem 0;"><strong>Name:</strong> ${data.customerName}</p>
+                                    <p style="margin: 0.5rem 0;"><strong>Phone:</strong> <a href="tel:${data.phone}" style="color: var(--secondary-blue); text-decoration: none;">${data.phone}</a></p>
+                                    <p style="margin: 0.5rem 0;"><strong>Email:</strong> <a href="mailto:${data.email}" style="color: var(--secondary-blue); text-decoration: none;">${data.email}</a></p>
+                                </div>
+                            </div>
+                            
+                            <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 12px;">
+                                <h4 style="color: var(--text-dark); margin-bottom: 1rem; display: flex; align-items: center;">
+                                    <i class="fas fa-route" style="color: var(--accent-orange); margin-right: 0.5rem;"></i>
+                                    Shipment Details
+                                </h4>
+                                <div style="space-y: 0.5rem;">
+                                    <p style="margin: 0.5rem 0;"><strong>From:</strong> ${data.fromCity}</p>
+                                    <p style="margin: 0.5rem 0;"><strong>To:</strong> ${data.toCity}</p>
+                                    <p style="margin: 0.5rem 0;"><strong>Service:</strong> ${data.service}</p>
+                                    <p style="margin: 0.5rem 0;"><strong>Size:</strong> ${data.homeSize}</p>
+                                    <p style="margin: 0.5rem 0;"><strong>Pickup Date:</strong> ${data.pickupDate}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Financial Information -->
+                        <div style="background: linear-gradient(135deg, var(--success-green), #047857); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                            <h4 style="margin-bottom: 1rem; display: flex; align-items: center;">
+                                <i class="fas fa-rupee-sign" style="margin-right: 0.5rem;"></i>
+                                Financial Details
+                            </h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                <div>
+                                    <p style="margin: 0; opacity: 0.9;">Estimated Cost</p>
+                                    <p style="margin: 0; font-size: 1.5rem; font-weight: 700;">${data.estimatedCost}</p>
+                                </div>
+                                <div>
+                                    <p style="margin: 0; opacity: 0.9;">Insurance</p>
+                                    <p style="margin: 0; font-weight: 600;">${data.insurance}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Special Instructions -->
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem;">
+                            <h4 style="color: #92400e; margin-bottom: 1rem; display: flex; align-items: center;">
+                                <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                                Special Instructions
+                            </h4>
+                            <p style="color: #92400e; margin: 0; line-height: 1.6;">${data.specialInstructions}</p>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                            <button onclick="callCustomer('${data.phone}')" style="background: var(--success-green); color: white; padding: 1rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-phone"></i>
+                                Call Customer
+                            </button>
+                            <button onclick="sendWhatsApp('${data.phone}', '${trackingId}')" style="background: #25d366; color: white; padding: 1rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp Update
+                            </button>
+                            <button onclick="editShipmentStatus('${trackingId}')" style="background: var(--secondary-blue); color: white; padding: 1rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-edit"></i>
+                                Update Status
+                            </button>
+                            <button onclick="printShipmentDetails('${trackingId}')" style="background: var(--text-dark); color: white; padding: 1rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-print"></i>
+                                Print Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeViewModal() {
+            const modal = document.getElementById('viewShipmentModal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        function callCustomer(phone) {
+            window.open(`tel:${phone}`, '_self');
+        }
+        
+        function sendWhatsApp(phone, trackingId) {
+            const message = `Hello! This is an update regarding your shipment ${trackingId} with A to Z Packers & Movers.
+
+Your shipment is currently being tracked and we wanted to provide you with the latest status update.
+
+For real-time tracking, please visit our website and enter your tracking ID: ${trackingId}
+
+If you have any questions or concerns, please feel free to contact us at +91 9338888550.
+
+Thank you for choosing A to Z Packers & Movers!`;
+            
+            window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+        
+        function printShipmentDetails(trackingId) {
+            alert(`🖨️ Printing shipment details for ${trackingId}...\n\nThis would generate a detailed PDF report including:\n• Customer information\n• Shipment timeline\n• Current status\n• Special instructions\n• Insurance details\n• Contact information\n\nPrint job sent to default printer!`);
+        }
+
+        function configurePricing() {
+            const action = prompt(`Pricing Configuration Options:\n\n1. Update Base Rates\n2. Modify Distance Charges\n3. Adjust Service Multipliers\n4. Set Additional Service Costs\n\nEnter choice (1-4):`);
+            
+            switch(action) {
+                case '1':
+                    alert('Base Rate Configuration:\n\n1 BHK: ₹8,000\n2 BHK: ₹12,000\n3 BHK: ₹18,000\n4+ BHK: ₹25,000\nVilla: ₹35,000\n\nRates updated successfully!');
+                    break;
+                case '2':
+                    const newRate = prompt('Enter new rate per kilometer (current: ₹15):');
+                    if (newRate && !isNaN(newRate)) {
+                        alert(`Distance rate updated to ₹${newRate} per kilometer!`);
+                    }
+                    break;
+                case '3':
+                    alert('Service Multipliers:\n\nHousehold: 1.0x\nOffice: 1.2x\nVehicle: 0.8x\nStorage: 1.1x\n\nMultipliers configured successfully!');
+                    break;
+                case '4':
+                    alert('Additional Service Costs:\n\nProfessional Packing: ₹2,000\nInsurance Coverage: ₹1,500\nUnpacking Service: ₹1,000\nTemporary Storage: ₹3,000\n\nCosts updated successfully!');
+                    break;
+                default:
+                    alert('Invalid selection. Please try again.');
+            }
+        }
+
+        // Form Submission
+        function submitForm(event) {
+            event.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            
+            // Create WhatsApp message
+            const message = `*New Quote Request - A to Z Packers & Movers*
+
+*Customer Details:*
+Name: ${data.name}
+Phone: ${data.phone}
+Email: ${data.email || 'Not provided'}
+
+*Moving Details:*
+From: ${data.fromCity}
+To: ${data.toCity}
+Service Type: ${data.serviceType}
+Moving Date: ${data.movingDate || 'Not specified'}
+
+*Additional Details:*
+${data.message || 'No additional details provided'}
+
+*Special Request:* Please include live tracking system
+
+*Timestamp:* ${new Date().toLocaleString()}`;
+
+            // Open WhatsApp with pre-filled message
+            const whatsappUrl = `https://wa.me/919338888550?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Show success message
+            alert('Thank you for your quote request! You will be redirected to WhatsApp to send your details directly to our team with live tracking included.');
+            
+            // Reset form
+            event.target.reset();
+        }
+
+        // Intersection Observer for Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards for animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card, .testimonial-card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+        });
+
+        // Active Navigation Link on Scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const scrollPos = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    updateActiveNavLink(`#${sectionId}`);
+                }
+            });
+        });
+
+        // Prevent form submission on Enter key in input fields
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && event.target.tagName === 'INPUT') {
+                event.preventDefault();
+            }
+        });
+
+        // Add loading state to form submissions
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('.form-submit');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Processing...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Auto-uppercase tracking ID input
+        document.getElementById('trackingId').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        // Auto-uppercase vehicle number input when modal is created
+        document.addEventListener('input', function(e) {
+            if (e.target.id === 'newVehicleNumber') {
+                e.target.value = e.target.value.toUpperCase();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ff9eb30653ab41',t:'MTc1NTMzMzU1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
